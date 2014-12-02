@@ -4,7 +4,7 @@ type Null struct {
 	Valid bool
 }
 
-func (j *Jason) Null() *Null {
+func (j *Jason) null() *Null {
 
 	var valid bool
 
@@ -23,6 +23,6 @@ func (j *Jason) Null() *Null {
 
 // Returns true if the object is actually an object
 func (j *Jason) IsNull() bool {
-	n := j.Null()
+	n := j.null()
 	return n.Valid
 }

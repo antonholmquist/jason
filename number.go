@@ -5,7 +5,7 @@ type Number struct {
 	Valid   bool
 }
 
-func (j *Jason) Number() *Number {
+func (j *Jason) number() *Number {
 
 	var valid bool
 
@@ -26,8 +26,13 @@ func (j *Jason) Number() *Number {
 	return n
 }
 
+func (j *Jason) Number() float64 {
+	n := j.number()
+	return n.Float64
+}
+
 // Returns true if the object is actually an object
 func (j *Jason) IsNumber() bool {
-	n := j.Number()
+	n := j.number()
 	return n.Valid
 }

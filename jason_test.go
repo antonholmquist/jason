@@ -60,7 +60,7 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.Get("name").String() == "anton", "name shoud match")
 	assert.True(j.Get("age").IsNumber() == true, "age should be a number")
-	assert.True(j.Get("age").Number().Float64 == 29, "age mismatch")
+	assert.True(j.Get("age").Number() == 29.0, "age mismatch")
 	assert.True(j.Get("age").Exists(), "age should exist")
 	assert.True(j.Get("age2").Exists() == false, "age2 should not exist")
 

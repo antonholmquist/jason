@@ -4,8 +4,6 @@
 
 Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/godoc) can be found on godoc.org.
 
-**Note: The API will be subject to change during 2014 if there are very good reasons to do so. On January 1st 2015 it will be frozen.**
-
 ## Data types
 
 The following golang values are used for the JSON data types. It is consistent with how `encoding/json` uses primitive types.

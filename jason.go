@@ -52,6 +52,7 @@ func NewFromReader(reader io.Reader) (*Jason, error) {
 }
 
 // Create a new instance from bytes
+// Returns an error if the bytes couldn't be parsed.
 func NewFromBytes(b []byte) (*Jason, error) {
 	j := new(Jason)
 	err := json.Unmarshal(b, &j.data)
@@ -59,13 +60,10 @@ func NewFromBytes(b []byte) (*Jason, error) {
 }
 
 // Create a new instance from a string
+// Returns an error if the string couldn't be parsed.
 func NewFromString(s string) (*Jason, error) {
 	b := []byte(s)
 	return NewFromBytes(b)
-}
-
-func (j *Jason) Marshal([]byte, error) {
-	json.Marshal(j.data)
 }
 
 // Returns true if this key exists

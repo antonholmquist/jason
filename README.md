@@ -2,7 +2,7 @@
 
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 
-Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. 
+Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it.
 
 ## Install
 
@@ -100,12 +100,9 @@ for _, friend := person.Get("friends").Array() {
 ```
 
 
-## Documentation
-
-https://godoc.org/github.com/antonholmquist/jason
-
-
 ## Sample Project
+
+Example project demonstrating how to parse a string.
 
 ```
 package main
@@ -144,9 +141,15 @@ func main() {
   }
 
 }
-
-
 ```
+
+## Documentation
+
+Documentation can be found a godoc:
+
+https://godoc.org/github.com/antonholmquist/jason
+
+
 
 ## Test
 To run the project tests:

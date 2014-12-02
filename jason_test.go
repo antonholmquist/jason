@@ -76,8 +76,11 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.Get("list").IsArray() == true, "list should be an array")
 
-	for _, element := range j.Get("list").Array().Slice {
+	for _, element := range j.Get("list2").Array() {
 		// element is the element from someSlice for where we are
-		log.Println("element: ", element)
+		log.Println("element: ", element.IsObject())
+
+		log.Println("element: ", element.Get("street").String())
+
 	}
 }

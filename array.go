@@ -1,11 +1,11 @@
 package jason
 
 type Array struct {
-	Slice []interface{}
+	Slice []*Jason
 	Valid bool
 }
 
-func (j *Jason) Array() *Array {
+func (j *Jason) array() *Array {
 
 	var valid bool
 
@@ -19,15 +19,29 @@ func (j *Jason) Array() *Array {
 	a := new(Array)
 	a.Valid = valid
 
+	// Unsure if this is a good way to use slices, it's probably not
+	var slice []*Jason
+
 	if valid {
-		a.Slice = j.data.([]interface{})
+
+		for _, element := range j.data.([]interface{}) {
+			child := Jason{element, true}
+			slice = append(slice, &child)
+		}
 	}
+
+	a.Slice = slice
 
 	return a
 }
 
+func (j *Jason) Array() []*Jason {
+	a := j.array()
+	return a.Slice
+}
+
 // Returns true if the array is actually an array
 func (j *Jason) IsArray() bool {
-	a := j.Array()
+	a := j.array()
 	return a.Valid
 }

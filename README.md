@@ -2,7 +2,7 @@
 
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 
-Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it.
+Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/godoc) can be found on godoc.org.
 
 The following golang values are used for the JSON data types. It is consistent with how `encoding/json` uses primitive types.
 
@@ -15,14 +15,14 @@ The following golang values are used for the JSON data types. It is consistent w
 
 ## Install
 
-```
+```shell
 go get github.com/antonholmquist/jason`
 ```
 
 
 ## Import
 
-```
+```go
 import (
   "github.com/antonholmquist/jason"
 )
@@ -34,7 +34,7 @@ import (
 
 Create a instance from a string. Returns an error if the string couldn't be parsed.
 
-```
+```go
 root, err := jason.NewFromString(s)
 
 ```
@@ -43,7 +43,7 @@ root, err := jason.NewFromString(s)
 
 Create a instance from a net/http response. Returns an error if the string couldn't be parsed.
 
-```
+```go
 root, err := jason.NewFromReader(res.Body)
 
 ```
@@ -52,7 +52,7 @@ root, err := jason.NewFromReader(res.Body)
 
 Reading  values is easy. If the key is invalid, it will return the default value.
 
-```
+```go
 root.Get("name").String()
 root.Get("age").Number()
 root.Get("verified").Bool()
@@ -65,7 +65,7 @@ root.Get("friends").Array()
 
 Reading nested values is easy. If the path is invalid, it will return the default value, for instance the empty string.
 
-```
+```go
 root.Get("person", "name").String()
 root.Get("person", "age").Number()
 root.Get("person", "verified").Bool()
@@ -78,7 +78,7 @@ root.Get("person", "friends").Array()
 
 To check if a value exist, use `Has()` or `Exists()`. The two examples below are identical and have different use cases.
 
-```
+```go
 root.Has("person", "name")
 root.Get("person", "name").Exists()
 ```
@@ -88,7 +88,7 @@ root.Get("person", "name").Exists()
 
 To check if a value at the keypath really is what you think it is, use the `Is()-methods`.
 
-```
+```go
 root.Get("name").IsString()
 root.Get("age").IsNumber()
 root.Get(""verified").IsBool()
@@ -102,7 +102,7 @@ root.Get("friends").IsNull()
 
 Looping through an array is easy and will never return an exeption. `Array()` returns an empty slice if the value at that keypath is null (or something else than an array).
 
-```
+```go
 for _, friend := range person.Get("friends").Array() {
   name := friend.Get("name").String()
   age := friend.Get("age").Number()
@@ -113,7 +113,7 @@ for _, friend := range person.Get("friends").Array() {
 
 Looping through an object is easy and will never return an exeption. `Object()` returns an empty map if the value at that keypath is null (or something else than an object).
 
-```
+```go
 for key, value := person.Get("person").Object() {
   ...
 }
@@ -124,7 +124,7 @@ for key, value := person.Get("person").Object() {
 
 Example project demonstrating how to parse a string.
 
-```
+```go
 package main
 
 import (
@@ -170,10 +170,9 @@ Documentation can be found a godoc:
 https://godoc.org/github.com/antonholmquist/jason
 
 
-
 ## Test
 To run the project tests:
 
-```
+```shell
 go test
 ```

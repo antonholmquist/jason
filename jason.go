@@ -10,6 +10,7 @@ type Jason struct {
 	exists bool // Used to separate nil and non-existing values
 }
 
+// Create a new instance from a io.reader
 func NewFromReader(reader io.Reader) (*Jason, error) {
 	j := new(Jason)
 	d := json.NewDecoder(reader)
@@ -17,11 +18,17 @@ func NewFromReader(reader io.Reader) (*Jason, error) {
 	return j, err
 }
 
-func NewFromString(s string) (*Jason, error) {
+// Create a new instance from bytes
+func NewFromBytes(b []byte) (*Jason, error) {
 	j := new(Jason)
-	b := []byte(s)
 	err := json.Unmarshal(b, &j.data)
 	return j, err
+}
+
+// Create a new instance from a string
+func NewFromString(s string) (*Jason, error) {
+	b := []byte(s)
+	return NewFromBytes(b)
 }
 
 func (j *Jason) Marshal([]byte, error) {

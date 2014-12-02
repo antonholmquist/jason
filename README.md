@@ -91,7 +91,7 @@ To check if a value at the keypath really is what you think it is, use the `Is()
 ```go
 root.Get("name").IsString()
 root.Get("age").IsNumber()
-root.Get(""verified").IsBool()
+root.Get("verified").IsBool()
 root.Get("education").IsObject()
 root.Get("friends").IsArray()
 root.Get("friends").IsNull()

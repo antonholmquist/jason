@@ -227,6 +227,40 @@ func (j *Jason) IsNumber() bool {
 	return n.Valid
 }
 
+// Private
+func (j *Jason) boolean() *jBool {
+
+	var valid bool
+
+	// Check the type of this data
+	switch j.data.(type) {
+	case bool:
+		valid = true
+		break
+	}
+
+	b := new(jBool)
+	b.Valid = valid
+
+	if valid {
+		b.Bool = j.data.(bool)
+	}
+
+	return b
+}
+
+// Returns true if the instance is actually a JSON bool.
+func (j *Jason) IsBoolean() bool {
+	b := j.boolean()
+	return b.Valid
+}
+
+// Returns true if the instance is actually a JSON bool.
+func (j *Jason) Boolean() bool {
+	b := j.boolean()
+	return b.Bool
+}
+
 // Private object
 func (j *Jason) object() *jObject {
 

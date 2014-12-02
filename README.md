@@ -55,7 +55,7 @@ Reading  values is easy. If the key is invalid, it will return the default value
 ```go
 root.Get("name").String()
 root.Get("age").Number()
-root.Get("verified").Bool()
+root.Get("verified").Boolean()
 root.Get("education").Object()
 root.Get("friends").Array()
 
@@ -68,7 +68,7 @@ Reading nested values is easy. If the path is invalid, it will return the defaul
 ```go
 root.Get("person", "name").String()
 root.Get("person", "age").Number()
-root.Get("person", "verified").Bool()
+root.Get("person", "verified").Boolean()
 root.Get("person", "education").Object()
 root.Get("person", "friends").Array()
 
@@ -91,7 +91,7 @@ To check if a value at the keypath really is what you think it is, use the `Is()
 ```go
 root.Get("name").IsString()
 root.Get("age").IsNumber()
-root.Get("verified").IsBool()
+root.Get("verified").IsBoolean()
 root.Get("education").IsObject()
 root.Get("friends").IsArray()
 root.Get("friends").IsNull()

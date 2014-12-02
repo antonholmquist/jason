@@ -29,6 +29,8 @@ func TestFirst(t *testing.T) {
     "name": "anton",
     "age": 29,
     "nothing": null,
+    "true": true,
+    "false": false,
     "list": [
       "first",
       "second"
@@ -76,6 +78,11 @@ func TestFirst(t *testing.T) {
 	assert.True(j.Get("address", "street").String() == "Street 42", "street mismatching")
 	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
 	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
+
+	assert.True(j.Get("true").IsBoolean(), "true test")
+	assert.True(j.Get("false").IsBoolean(), "true test")
+	assert.True(j.Get("true").Boolean() == true, "true test")
+	assert.True(j.Get("false").Boolean() == false, "true test")
 
 	assert.True(j.Get("list").IsArray() == true, "list should be an array")
 	assert.True(j.Get("list2").IsArray() == true, "list2 should be an array")

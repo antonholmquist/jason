@@ -8,8 +8,8 @@ Jason intends to be an idiomatic JSON library for Go.
 
 ```
 go get github.com/antonholmquist/jason`
-
 ```
+
 
 ## Import
 
@@ -18,6 +18,86 @@ import (
   "github.com/antonholmquist/jason"
 )
 ```
+
+## Examples
+
+### Create from string
+
+```
+root, err := jason.NewFromString(exampleJSON)
+
+```
+
+### Create from net/http response
+```
+root, err := jason.NewFromReader(res.Body)
+
+```
+
+### Read values
+
+Reading  values is easy. If the key is invalid, it will return the default value.
+
+```
+root.Get("name").String()
+root.Get("age").Number()
+root.Get("verified").Bool()
+root.Get("education").Object()
+root.Get("friends").Array()
+
+```
+
+### Read nested values
+
+Reading nested values is easy. If the path is invalid, it will return the default value, for instance the empty string.
+
+```
+root.Get("person", "name").String()
+root.Get("person", "age").Number()
+root.Get("person", "verified").Bool()
+root.Get("person", "education").Object()
+root.Get("person", "friends").Array()
+
+```
+
+### Check if values exists
+
+To check if a value exist, use `Exists()`.
+
+```
+root.Get("person", "name").Exists()
+```
+
+
+### Validate values
+
+To check if a value at the keypath really is what you think it is, use the `Is()-methods`.
+
+```
+root.Get("name").IsString()
+root.Get("age").IsNumber()
+root.Get(""verified").IsBool()
+root.Get("education").IsObject()
+root.Get("friends").IsArray()
+
+```
+
+### Loop through array
+
+Looping through an array is easy and will never return an exeption. `Array()` returns an empty array if the value at that keypath is null or something else than an array.
+
+```
+for _, friend := person.Get("friends").Array() {
+  name := friend.Get("name").String()
+  age := friend.Get("age").Number()
+}
+```
+
+
+## Documentation
+
+https://godoc.org/github.com/antonholmquist/jason
+
 
 ## Sample Project
 
@@ -33,6 +113,7 @@ func main() {
 
   exampleJSON := `{
     "name": "Walter White",
+
     "age": 51,
     "children": [
       "junior",
@@ -59,4 +140,10 @@ func main() {
 }
 
 
+```
+
+## Test
+
+```
+go test
 ```

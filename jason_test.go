@@ -39,11 +39,7 @@ func TestFirst(t *testing.T) {
     }
   }`
 
-	log.Println("FirstTest: ", testJSON)
-
 	j, err := NewFromString(testJSON)
-
-	log.Println("data: ", j.data)
 
 	assert.True(err == nil, "failed to create json from string")
 
@@ -63,7 +59,15 @@ func TestFirst(t *testing.T) {
 	assert.True(j.Get("nothing2").Exists() == false, "nothing2 should not exist")
 
 	assert.True(j.Get("address").IsObject() == true, "address should be an object")
+	assert.True(j.Get("address", "street").IsString() == true, "street should be a string")
+	assert.True(j.Get("address", "street").String().String == "Street 42", "street mismatching")
+	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
+	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
 
 	assert.True(j.Get("list").IsArray() == true, "list should be an array")
 
+	for _, element := range j.Get("list").Array().Slice {
+		// element is the element from someSlice for where we are
+		log.Println("element: ", element)
+	}
 }

@@ -34,8 +34,8 @@ func (j *Jason) Exists() bool {
 	return j.exists
 }
 
-// Get
-func (j *Jason) Get(key string) *Jason {
+// Private Get
+func (j *Jason) get(key string) *Jason {
 
 	// Assume this is an object
 	obj := j.Object()
@@ -50,4 +50,14 @@ func (j *Jason) Get(key string) *Jason {
 
 	return &Jason{nil, false}
 
+}
+
+// Get key
+// Example: Get("address", "street")
+func (j *Jason) Get(args ...string) *Jason {
+	current := j
+	for _, key := range args {
+		current = current.get(key)
+	}
+	return current
 }

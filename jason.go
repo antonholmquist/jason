@@ -8,6 +8,7 @@ import (
 type Jason struct {
 	data   interface{}
 	exists bool // Used to separate nil and non-existing values
+	root   bool // whether it is the root struct
 }
 
 // Private array
@@ -46,6 +47,7 @@ type jString struct {
 // Example: NewFromReader(res.Body)
 func NewFromReader(reader io.Reader) (*Jason, error) {
 	j := new(Jason)
+	j.root = true
 	d := json.NewDecoder(reader)
 	err := d.Decode(&j.data)
 	return j, err
@@ -55,6 +57,7 @@ func NewFromReader(reader io.Reader) (*Jason, error) {
 // Returns an error if the bytes couldn't be parsed.
 func NewFromBytes(b []byte) (*Jason, error) {
 	j := new(Jason)
+	j.root = true
 	err := json.Unmarshal(b, &j.data)
 	return j, err
 }
@@ -72,6 +75,11 @@ func (j *Jason) Exists() bool {
 	return j.exists
 }
 
+// Marshal into bytes
+func (j *Jason) Marshal() ([]byte, error) {
+	return json.Marshal(j.data)
+}
+
 // Private Get
 func (j *Jason) get(key string) *Jason {
 
@@ -86,7 +94,7 @@ func (j *Jason) get(key string) *Jason {
 		}
 	}
 
-	return &Jason{nil, false}
+	return &Jason{nil, false, false}
 
 }
 
@@ -153,7 +161,7 @@ func (j *Jason) array() *jArray {
 	if valid {
 
 		for _, element := range j.data.([]interface{}) {
-			child := Jason{element, true}
+			child := Jason{element, true, false}
 			slice = append(slice, &child)
 		}
 	}
@@ -240,7 +248,7 @@ func (j *Jason) object() *jObject {
 		//obj.Map = j.data.(map[string]interface{})
 
 		for key, element := range j.data.(map[string]interface{}) {
-			m[key] = &Jason{element, true}
+			m[key] = &Jason{element, true, false}
 		}
 	}
 
@@ -286,9 +294,26 @@ func (j *Jason) sstring() *jString {
 
 // Returns the current data as string. Fallbacks on empty string if invalid.
 // Check IsString() before using if you want to know.
+// Note: This is also the method used by log to print contents
 func (j *Jason) String() string {
-	s := j.sstring()
-	return s.String
+
+	// If j is the root node, it can never be a string
+	// Since log and fmt uses this method to log value, we should return something nice in those cases
+	if j.root {
+
+		f, err := json.Marshal(j.data)
+
+		if err != nil {
+			return err.Error()
+		} else {
+			return string(f)
+		}
+
+	} else {
+		s := j.sstring()
+		return s.String
+	}
+
 }
 
 // Returns true if the object is actually an object

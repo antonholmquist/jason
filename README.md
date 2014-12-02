@@ -100,12 +100,22 @@ root.Get("friends").IsNull()
 
 ### Loop through array
 
-Looping through an array is easy and will never return an exeption. `Array()` returns an empty array if the value at that keypath is null or something else than an array.
+Looping through an array is easy and will never return an exeption. `Array()` returns an empty slice if the value at that keypath is null (or something else than an array).
 
 ```
-for _, friend := person.Get("friends").Array() {
+for _, friend := range person.Get("friends").Array() {
   name := friend.Get("name").String()
   age := friend.Get("age").Number()
+}
+```
+
+### Loop through object
+
+Looping through an object is easy and will never return an exeption. `Object()` returns an empty map if the value at that keypath is null (or something else than an object).
+
+```
+for key, value := person.Get("person").Object() {
+  ...
 }
 ```
 

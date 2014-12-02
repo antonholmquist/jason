@@ -1,6 +1,6 @@
 package jason
 
 type Bool struct {
-	Value bool
+	Bool  bool
 	Valid bool
 }

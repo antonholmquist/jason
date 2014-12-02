@@ -1,11 +1,13 @@
 package jason
 
+import ()
+
 type String struct {
 	String string
 	Valid  bool
 }
 
-func (j *Jason) String() *String {
+func (j *Jason) sstring() *String {
 
 	var valid bool
 
@@ -26,8 +28,13 @@ func (j *Jason) String() *String {
 	return s
 }
 
+func (j *Jason) String() string {
+	s := j.sstring()
+	return s.String
+}
+
 // Returns true if the object is actually an object
 func (j *Jason) IsString() bool {
-	s := j.String()
+	s := j.sstring()
 	return s.Valid
 }

@@ -1,7 +1,5 @@
 package jason
 
-import ()
-
 type Number struct {
 	Float64 float64
 	Valid   bool

@@ -3,7 +3,6 @@ package jason
 import (
 	"encoding/json"
 	"io"
-	_ "log"
 )
 
 type Jason struct {
@@ -38,13 +37,13 @@ func (j *Jason) Exists() bool {
 func (j *Jason) get(key string) *Jason {
 
 	// Assume this is an object
-	obj := j.Object()
+	obj := j.object()
 
 	// Only continue if it really is an object
 	if obj.Valid {
-		childData, ok := obj.Map[key]
+		child, ok := obj.Map[key]
 		if ok {
-			return &Jason{childData, true}
+			return child
 		}
 	}
 

@@ -53,11 +53,12 @@ func TestFirst(t *testing.T) {
 
 	assert.True(err == nil, "failed to create json from string")
 
-	assert.True(j.Object().Valid, "the object should be valid")
+	assert.True(j.Get("name").IsString() == true, "name should be a string")
+	assert.True(j.Get("name").IsObject() == false, "name should not be an object")
 
-	assert.True(j.Get("name").IsObject() == false, "name shoud not be an object")
-	assert.True(j.Get("name").IsString() == true, "name shoud not be an object")
-	assert.True(j.Get("name").String().String == "anton", "name shoud match")
+	assert.True(j.object().Valid, "the object should be valid")
+
+	assert.True(j.Get("name").String() == "anton", "name shoud match")
 	assert.True(j.Get("age").IsNumber() == true, "age should be a number")
 	assert.True(j.Get("age").Number().Float64 == 29, "age mismatch")
 	assert.True(j.Get("age").Exists(), "age should exist")
@@ -70,17 +71,18 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.Get("address").IsObject() == true, "address should be an object")
 	assert.True(j.Get("address", "street").IsString() == true, "street should be a string")
-	assert.True(j.Get("address", "street").String().String == "Street 42", "street mismatching")
+	assert.True(j.Get("address", "street").String() == "Street 42", "street mismatching")
 	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
 	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
 
 	assert.True(j.Get("list").IsArray() == true, "list should be an array")
+	assert.True(j.Get("list2").IsArray() == true, "list2 should be an array")
+	assert.True(j.Get("list2") != nil, "list2 should exist")
 
 	for _, element := range j.Get("list2").Array() {
-		// element is the element from someSlice for where we are
-		log.Println("element: ", element.IsObject())
 
-		log.Println("element: ", element.Get("street").String())
+		assert.True(element.IsObject() == true, "first fail")
+		assert.True(element.Get("street").String() == "Street 42", "second fail")
 
 	}
 }

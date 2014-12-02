@@ -1,12 +1,23 @@
 # Jason - JSON Library for Go
 
-Jason intends to be an ideomatic JSON library for Go.
+Jason intends to be an idiomatic JSON library for Go.
 
 ## Install
 
-`go get github.com/antonholmquist/jason`
+```
+go get github.com/antonholmquist/jason`
 
-## Example
+```
+
+## Import
+
+```
+import (
+  "github.com/antonholmquist/jason"
+)
+```
+
+## Sample Project
 
 ```
 package main

@@ -10,31 +10,33 @@ type Jason struct {
 	exists bool // Used to separate nil and non-existing values
 }
 
-type Array struct {
+// Private array
+type jArray struct {
 	Slice []*Jason
 	Valid bool
 }
 
-type Bool struct {
+// Private bool
+type jBool struct {
 	Bool  bool
 	Valid bool
 }
 
-type Null struct {
+type jNull struct {
 	Valid bool
 }
 
-type Number struct {
+type jNumber struct {
 	Float64 float64
 	Valid   bool
 }
 
-type Object struct {
+type jObject struct {
 	Map   map[string]*Jason
 	Valid bool
 }
 
-type String struct {
+type jString struct {
 	String string
 	Valid  bool
 }
@@ -100,7 +102,7 @@ func (j *Jason) Get(args ...string) *Jason {
 	return current
 }
 
-func (j *Jason) null() *Null {
+func (j *Jason) null() *jNull {
 
 	var valid bool
 
@@ -111,7 +113,7 @@ func (j *Jason) null() *Null {
 		break
 	}
 
-	n := new(Null)
+	n := new(jNull)
 	n.Valid = valid && j.exists // We also need to check that it actually exists here to separate nil and non-existing values
 
 	return n
@@ -123,7 +125,7 @@ func (j *Jason) IsNull() bool {
 	return n.Valid
 }
 
-func (j *Jason) array() *Array {
+func (j *Jason) array() *jArray {
 
 	var valid bool
 
@@ -134,7 +136,7 @@ func (j *Jason) array() *Array {
 		break
 	}
 
-	a := new(Array)
+	a := new(jArray)
 	a.Valid = valid
 
 	// Unsure if this is a good way to use slices, it's probably not
@@ -153,6 +155,9 @@ func (j *Jason) array() *Array {
 	return a
 }
 
+// Returns the current data as an array of Jason values.
+// Fallbacks on empty array
+// Check IsArray() before using if you want to know.
 func (j *Jason) Array() []*Jason {
 	a := j.array()
 	return a.Slice
@@ -164,7 +169,7 @@ func (j *Jason) IsArray() bool {
 	return a.Valid
 }
 
-func (j *Jason) number() *Number {
+func (j *Jason) number() *jNumber {
 
 	var valid bool
 
@@ -175,7 +180,7 @@ func (j *Jason) number() *Number {
 		break
 	}
 
-	n := new(Number)
+	n := new(jNumber)
 	n.Valid = valid
 
 	if valid {
@@ -190,12 +195,12 @@ func (j *Jason) Number() float64 {
 	return n.Float64
 }
 
-// Conveniece method
+// Returns the same as Number()
 func (j *Jason) Float64() float64 {
 	return j.Number()
 }
 
-// Conveniece method
+// Returns the Number() converted to an int64
 func (j *Jason) Int64() int64 {
 	return int64(j.Number())
 }
@@ -207,7 +212,7 @@ func (j *Jason) IsNumber() bool {
 }
 
 // Private object
-func (j *Jason) object() *Object {
+func (j *Jason) object() *jObject {
 
 	var valid bool
 
@@ -218,7 +223,7 @@ func (j *Jason) object() *Object {
 		break
 	}
 
-	obj := new(Object)
+	obj := new(jObject)
 	obj.Valid = valid
 
 	m := make(map[string]*Jason)
@@ -250,7 +255,7 @@ func (j *Jason) IsObject() bool {
 	return obj.Valid
 }
 
-func (j *Jason) sstring() *String {
+func (j *Jason) sstring() *jString {
 
 	var valid bool
 
@@ -261,7 +266,7 @@ func (j *Jason) sstring() *String {
 		break
 	}
 
-	s := new(String)
+	s := new(jString)
 	s.Valid = valid
 
 	if valid {

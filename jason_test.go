@@ -33,6 +33,16 @@ func TestFirst(t *testing.T) {
       "first",
       "second"
     ],
+    "list2": [
+      {
+        "street": "Street 42",
+        "city": "Stockholm"
+      },
+      {
+        "street": "Street 42",
+        "city": "Stockholm"
+      }
+    ],
     "address": {
       "street": "Street 42",
       "city": "Stockholm"

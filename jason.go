@@ -294,26 +294,36 @@ func (j *Jason) sstring() *jString {
 
 // Returns the current data as string. Fallbacks on empty string if invalid.
 // Check IsString() before using if you want to know.
-// Note: This is also the method used by log to print contents
+// Note: This is also the method used by log to print contents,
+// so that's why you need to use Log() instead when printing
 func (j *Jason) String() string {
 
 	// If j is the root node, it can never be a string
 	// Since log and fmt uses this method to log value, we should return something nice in those cases
+	// Give kind reminder if this is the root node.
 	if j.root {
-
-		f, err := json.Marshal(j.data)
-
-		if err != nil {
-			return err.Error()
-		} else {
-			return string(f)
-		}
-
+		return "Note: Jason instances cannot be printed due to String() method name already being used by this library. Use Log() instead."
 	} else {
 		s := j.sstring()
 		return s.String
 	}
 
+}
+
+// Use this method when logging.
+//
+// The second version below will not work since log uses String() method that we are already using.
+// DO: log.Println("root: ", root.Log())
+// DO NOT: log.Println("root: ", root)
+
+func (j *Jason) Log() string {
+	f, err := json.Marshal(j.data)
+
+	if err != nil {
+		return err.Error()
+	} else {
+		return string(f)
+	}
 }
 
 // Returns true if the object is actually an object

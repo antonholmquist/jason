@@ -31,6 +31,16 @@ func (j *Jason) Number() float64 {
 	return n.Float64
 }
 
+// Conveniece method
+func (j *Jason) Float64() float64 {
+	return j.Number()
+}
+
+// Conveniece method
+func (j *Jason) Int64() int64 {
+	return int64(j.Number())
+}
+
 // Returns true if the object is actually an object
 func (j *Jason) IsNumber() bool {
 	n := j.number()

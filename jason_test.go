@@ -58,6 +58,8 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.object().Valid, "the object should be valid")
 
+	assert.True(j.Has("name") == true, "has name")
+	assert.True(j.Has("name2") == false, "do not have name2")
 	assert.True(j.Get("name").String() == "anton", "name shoud match")
 	assert.True(j.Get("age").IsNumber() == true, "age should be a number")
 	assert.True(j.Get("age").Number() == 29.0, "age mismatch")

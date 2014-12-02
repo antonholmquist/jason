@@ -92,14 +92,24 @@ func (j *Jason) get(key string) *Jason {
 
 }
 
-// Get key or key path. Returns a new Jason instance.
-// Example: Get("address", "street")
-func (j *Jason) Get(args ...string) *Jason {
+// Private to get path
+func (j *Jason) getPath(keys []string) *Jason {
 	current := j
-	for _, key := range args {
+	for _, key := range keys {
 		current = current.get(key)
 	}
 	return current
+}
+
+// Get key or key path. Returns a new Jason instance.
+// Example: Get("address", "street")
+func (j *Jason) Get(keys ...string) *Jason {
+	return j.getPath(keys)
+}
+
+// Determine if key path exists
+func (j *Jason) Has(keys ...string) bool {
+	return j.getPath(keys).Exists()
 }
 
 func (j *Jason) null() *jNull {

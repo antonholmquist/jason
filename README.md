@@ -2,7 +2,7 @@
 
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 
-Jason intends to be an idiomatic JSON library for Go.
+Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. 
 
 ## Install
 
@@ -23,12 +23,17 @@ import (
 
 ### Create from string
 
+Create a instance from a string. Returns an error if the string couldn't be parsed.
+
 ```
-root, err := jason.NewFromString(exampleJSON)
+root, err := jason.NewFromString(s)
 
 ```
 
-### Create from net/http response
+### Create from a http response
+
+Create a instance from a net/http response. Returns an error if the string couldn't be parsed.
+
 ```
 root, err := jason.NewFromReader(res.Body)
 
@@ -62,9 +67,10 @@ root.Get("person", "friends").Array()
 
 ### Check if values exists
 
-To check if a value exist, use `Exists()`.
+To check if a value exist, use `Has()` or `Exists()`. The two examples below are identical and have different use cases.
 
 ```
+root.Has("person", "name")
 root.Get("person", "name").Exists()
 ```
 
@@ -143,6 +149,7 @@ func main() {
 ```
 
 ## Test
+To run the project tests:
 
 ```
 go test

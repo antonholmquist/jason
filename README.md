@@ -4,6 +4,15 @@
 
 Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it.
 
+The following golang values are used for the JSON data types. It is consistent with how `encoding/json` uses primitive types.
+
+- `bool`, for JSON booleans
+- `float64`, for JSON numbers
+- `string`, for JSON strings
+- `[]*Jason`, for JSON arrays
+- `map[string]*Jason`, for JSON objects
+- `nil` for JSON null
+
 ## Install
 
 ```
@@ -85,6 +94,7 @@ root.Get("age").IsNumber()
 root.Get(""verified").IsBool()
 root.Get("education").IsObject()
 root.Get("friends").IsArray()
+root.Get("friends").IsNull()
 
 ```
 

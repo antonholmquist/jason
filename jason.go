@@ -316,9 +316,16 @@ func (j *Value) object() *jObject {
 // Returns the current data as objects with string keys and Jason values.
 // Fallbacks on empty map if invalid.
 // Check IsObject() before using if you want to know.
-func (j *Value) Object() map[string]*Value {
+func (j *Value) AsObject() (map[string]*Value, error) {
 	obj := j.object()
-	return obj.Map
+
+	var err error
+
+	if !obj.Valid {
+		err = errors.New("Is not an object")
+	}
+
+	return obj.Map, err
 }
 
 // Returns true if the instance is actually a JSON object

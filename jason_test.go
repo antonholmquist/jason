@@ -120,7 +120,9 @@ func TestFirst(t *testing.T) {
 		assert.True(s == "Street 42" && err == nil, "second fail")
 	}
 
-	for key, value := range j.Get("country").Object() {
+	obj, err := j.Get("country").AsObject()
+	assert.True(obj != nil && err == nil, "country should not return error on AsObject")
+	for key, value := range obj {
 
 		assert.True(key == "name", "country name key incorrect")
 		assert.True(value.IsString(), "country name should be a string")

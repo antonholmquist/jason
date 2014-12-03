@@ -349,7 +349,6 @@ func (j *Jason) String() string {
 // The second version below will not work since log uses String() method that we are already using.
 // DO: log.Println("root: ", root.Log())
 // DO NOT: log.Println("root: ", root)
-
 func (j *Jason) Log() string {
 	f, err := json.Marshal(j.data)
 

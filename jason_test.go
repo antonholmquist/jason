@@ -70,7 +70,8 @@ func TestFirst(t *testing.T) {
 	s, err = j.Get("name").AsString()
 	assert.True(s == "anton" && err == nil, "name shoud match")
 
-	assert.True(j.Get("age").IsNumber() == true, "age should be a number")
+	_, err = j.Get("age").AsNumber()
+	assert.True(err == nil, "age should be a number")
 
 	n, err := j.Get("age").AsNumber()
 	assert.True(n == 29.0 && err == nil, "age mismatch")
@@ -117,7 +118,7 @@ func TestFirst(t *testing.T) {
 	assert.True(len(list2Array) == 2, "List2 should should have length 2")
 
 	for _, element := range list2Array {
-		assert.True(element.IsObject() == true, "first fail")
+		//assert.True(element.IsObject() == true, "first fail")
 
 		s, err = element.Get("street").AsString()
 		assert.True(s == "Street 42" && err == nil, "second fail")

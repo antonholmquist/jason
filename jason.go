@@ -186,12 +186,6 @@ func (j *Value) AsArray() ([]*Value, error) {
 	return a.Slice, err
 }
 
-// Returns true if the instance is actually a JSON array.
-func (j *Value) IsArray() bool {
-	a := j.array()
-	return a.Valid
-}
-
 func (j *Value) number() *jNumber {
 
 	var valid bool
@@ -226,20 +220,14 @@ func (j *Value) AsNumber() (float64, error) {
 }
 
 // Returns the same as Number()
-func (j *Value) Float64() (float64, error) {
+func (j *Value) AsFloat64() (float64, error) {
 	return j.AsNumber()
 }
 
 // Returns the Number() converted to an int64
-func (j *Value) Int64() (int64, error) {
+func (j *Value) AsInt64() (int64, error) {
 	f, err := j.AsNumber()
 	return int64(f), err
-}
-
-// Returns true if the instance is actually a JSON number.
-func (j *Value) IsNumber() bool {
-	n := j.number()
-	return n.Valid
 }
 
 // Private
@@ -262,12 +250,6 @@ func (j *Value) boolean() *jBool {
 	}
 
 	return b
-}
-
-// Returns true if the instance is actually a JSON bool.
-func (j *Value) IsBoolean() bool {
-	b := j.boolean()
-	return b.Valid
 }
 
 // Returns true if the instance is actually a JSON bool.
@@ -327,12 +309,6 @@ func (j *Value) AsObject() (map[string]*Value, error) {
 	return obj.Map, err
 }
 
-// Returns true if the instance is actually a JSON object
-func (j *Value) IsObject() bool {
-	obj := j.object()
-	return obj.Valid
-}
-
 func (j *Value) sstring() *jString {
 
 	var valid bool
@@ -368,12 +344,6 @@ func (j *Value) AsString() (string, error) {
 	}
 
 	return s.String, err
-}
-
-// Returns true if the object is actually an object
-func (j *Value) IsString() bool {
-	s := j.sstring()
-	return s.Valid
 }
 
 // Used for logging

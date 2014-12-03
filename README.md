@@ -38,7 +38,7 @@ import (
 Create a instance from a string. Returns an error if the string couldn't be parsed.
 
 ```go
-root, err := jason.NewValueFromString(s)
+v, err := jason.NewValueFromString(s)
 
 ```
 
@@ -47,7 +47,7 @@ root, err := jason.NewValueFromString(s)
 Create a instance from a net/http response. Returns an error if the string couldn't be parsed.
 
 ```go
-root, err := jason.NewValueFromReader(res.Body)
+v, err := jason.NewValueFromReader(res.Body)
 
 ```
 
@@ -56,11 +56,11 @@ root, err := jason.NewValueFromReader(res.Body)
 Reading  values is easy. If the key is invalid, it will return the default value.
 
 ```go
-root.Get("name").AsString()
-root.Get("age").AsNumber()
-root.Get("verified").AsBoolean()
-root.Get("education").AsObject()
-root.Get("friends").AsArray()
+name, err := v.Get("name").AsString()
+age, err := v.Get("age").AsNumber()
+verified, err := v.Get("verified").AsBoolean()
+education, err := v.Get("education").AsObject()
+friends,err := v.Get("friends").AsArray()
 
 ```
 
@@ -69,11 +69,11 @@ root.Get("friends").AsArray()
 Reading nested values is easy. If the path is invalid, it will return the default value, for instance the empty string.
 
 ```go
-root.Get("person", "name").AsString()
-root.Get("person", "age").AsNumber()
-root.Get("person", "verified").AsBoolean()
-root.Get("person", "education").AsObject()
-root.Get("person", "friends").AsArray()
+name, err := v.Get("person", "name").AsString()
+age, err := v.Get("person", "age").AsNumber()
+verified, err := v.Get("person", "verified").AsBoolean()
+education, err := v.Get("person", "education").AsObject()
+friends, err := v.Get("person", "friends").AsArray()
 
 ```
 
@@ -85,20 +85,6 @@ To check if a value exist, use `Exists()`.
 root.Get("person", "name").Exists()
 ```
 
-### Validate values
-
-To check if a value at the keypath really is what you think it is, use the `Is()-methods`.
-
-```go
-root.Get("name").IsString()
-root.Get("age").IsNumber()
-root.Get("verified").IsBoolean()
-root.Get("education").IsObject()
-root.Get("friends").IsArray()
-root.Get("friends").IsNull()
-
-```
-
 ### Loop through array
 
 Looping through an array is easy and will never return an exeption. `AsArray()` returns an empty slice if the value at that keypath is null (or something else than an array).
@@ -106,9 +92,9 @@ Looping through an array is easy and will never return an exeption. `AsArray()` 
 ```go
 
 friends, err := person.Get("friends").AsArray()
-for _, friend := friends a {
-  name := friend.Get("name").String()
-  age := friend.Get("age").Number()
+for _, friend := range friends {
+  name, err := friend.Get("name").AsString()
+  age, err := friend.Get("age").AsNumber()
 }
 ```
 

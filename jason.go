@@ -9,7 +9,6 @@ import (
 type Value struct {
 	data   interface{}
 	exists bool // Used to separate nil and non-existing values
-	root   bool // whether it is the root struct
 }
 
 // Private array
@@ -48,7 +47,6 @@ type jString struct {
 // Example: NewFromReader(res.Body)
 func NewValueFromReader(reader io.Reader) (*Value, error) {
 	j := new(Value)
-	j.root = true
 	d := json.NewDecoder(reader)
 	err := d.Decode(&j.data)
 	return j, err
@@ -58,7 +56,6 @@ func NewValueFromReader(reader io.Reader) (*Value, error) {
 // Returns an error if the bytes couldn't be parsed.
 func NewValueFromBytes(b []byte) (*Value, error) {
 	j := new(Value)
-	j.root = true
 	err := json.Unmarshal(b, &j.data)
 	return j, err
 }
@@ -95,7 +92,7 @@ func (j *Value) get(key string) *Value {
 		}
 	}
 
-	return &Value{nil, false, false}
+	return &Value{nil, false}
 
 }
 
@@ -162,7 +159,7 @@ func (j *Value) array() *jArray {
 	if valid {
 
 		for _, element := range j.data.([]interface{}) {
-			child := Value{element, true, false}
+			child := Value{element, true}
 			slice = append(slice, &child)
 		}
 	}
@@ -304,7 +301,7 @@ func (j *Value) object() *jObject {
 		//obj.Map = j.data.(map[string]interface{})
 
 		for key, element := range j.data.(map[string]interface{}) {
-			m[key] = &Value{element, true, false}
+			m[key] = &Value{element, true}
 		}
 	}
 

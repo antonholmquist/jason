@@ -214,19 +214,27 @@ func (j *Value) number() *jNumber {
 	return n
 }
 
-func (j *Value) Number() float64 {
+func (j *Value) AsNumber() (float64, error) {
 	n := j.number()
-	return n.Float64
+
+	var err error
+
+	if !n.Valid {
+		err = errors.New("Is not a number")
+	}
+
+	return n.Float64, err
 }
 
 // Returns the same as Number()
-func (j *Value) Float64() float64 {
-	return j.Number()
+func (j *Value) Float64() (float64, error) {
+	return j.AsNumber()
 }
 
 // Returns the Number() converted to an int64
-func (j *Value) Int64() int64 {
-	return int64(j.Number())
+func (j *Value) Int64() (int64, error) {
+	f, err := j.AsNumber()
+	return int64(f), err
 }
 
 // Returns true if the instance is actually a JSON number.
@@ -342,39 +350,32 @@ func (j *Value) sstring() *jString {
 
 // Returns the current data as string. Fallbacks on empty string if invalid.
 // Check IsString() before using if you want to know.
-// Note: This is also the method used by log to print contents,
-// so that's why you need to use Log() instead when printing
-func (j *Value) String() string {
+// It's good to use this same since String() conflicts with log default method
+func (j *Value) AsString() (string, error) {
 
-	// If j is the root node, it can never be a string
-	// Since log and fmt uses this method to log value, we should return something nice in those cases
-	// Give kind reminder if this is the root node.
-	if j.root {
-		return "Note: Jason instances cannot be printed due to String() method name already being used by this library. Use Log() instead."
-	} else {
-		s := j.sstring()
-		return s.String
+	s := j.sstring()
+
+	var err error
+
+	if !s.Valid {
+		err = errors.New("Is not a string")
 	}
 
-}
-
-// Use this method when logging.
-//
-// The second version below will not work since log uses String() method that we are already using.
-// DO: log.Println("root: ", root.Log())
-// DO NOT: log.Println("root: ", root)
-func (j *Value) Log() string {
-	f, err := json.Marshal(j.data)
-
-	if err != nil {
-		return err.Error()
-	} else {
-		return string(f)
-	}
+	return s.String, err
 }
 
 // Returns true if the object is actually an object
 func (j *Value) IsString() bool {
 	s := j.sstring()
 	return s.Valid
+}
+
+// Used for logging
+func (j *Value) String() string {
+	f, err := json.Marshal(j.data)
+	if err != nil {
+		return err.Error()
+	} else {
+		return string(f)
+	}
 }

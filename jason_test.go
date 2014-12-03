@@ -65,9 +65,14 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.Has("name") == true, "has name")
 	assert.True(j.Has("name2") == false, "do not have name2")
-	assert.True(j.Get("name").String() == "anton", "name shoud match")
+
+	s, err := j.Get("name").AsString()
+	assert.True(s == "anton" && err == nil, "name shoud match")
+
 	assert.True(j.Get("age").IsNumber() == true, "age should be a number")
-	assert.True(j.Get("age").Number() == 29.0, "age mismatch")
+
+	n, err := j.Get("age").AsNumber()
+	assert.True(n == 29.0 && err == nil, "age mismatch")
 	assert.True(j.Get("age").Exists(), "age should exist")
 	assert.True(j.Get("age2").Exists() == false, "age2 should not exist")
 
@@ -78,7 +83,13 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.Get("address").IsObject() == true, "address should be an object")
 	assert.True(j.Get("address", "street").IsString() == true, "street should be a string")
-	assert.True(j.Get("address", "street").String() == "Street 42", "street mismatching")
+
+	s, err = j.Get("address", "street").AsString()
+	assert.True(s == "Street 42" && err == nil, "street mismatching")
+
+	s, err = j.Get("address", "name2").AsString()
+	assert.True(s == "" && err != nil, "nonexistent string fail")
+
 	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
 	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
 
@@ -104,13 +115,17 @@ func TestFirst(t *testing.T) {
 
 	for _, element := range list2Array {
 		assert.True(element.IsObject() == true, "first fail")
-		assert.True(element.Get("street").String() == "Street 42", "second fail")
+
+		s, err = element.Get("street").AsString()
+		assert.True(s == "Street 42" && err == nil, "second fail")
 	}
 
 	for key, value := range j.Get("country").Object() {
 
 		assert.True(key == "name", "country name key incorrect")
 		assert.True(value.IsString(), "country name should be a string")
-		assert.True(value.String() == "Sweden", "country name should be Sweden")
+
+		s, err = value.AsString()
+		assert.True(s == "Sweden" && err == nil, "country name should be Sweden")
 	}
 }

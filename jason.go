@@ -186,6 +186,11 @@ func (j *Value) AsArray() ([]*Value, error) {
 	return a.Slice, err
 }
 
+func (j *Value) IsArray() bool {
+	a := j.array()
+	return a.Valid
+}
+
 func (j *Value) number() *jNumber {
 
 	var valid bool
@@ -217,6 +222,11 @@ func (j *Value) AsNumber() (float64, error) {
 	}
 
 	return n.Float64, err
+}
+
+func (j *Value) IsNumber() bool {
+	n := j.number()
+	return n.Valid
 }
 
 // Returns the same as Number()
@@ -262,6 +272,11 @@ func (j *Value) AsBoolean() (bool, error) {
 	}
 
 	return b.Bool, err
+}
+
+func (v *Value) IsBoolean() bool {
+	b := v.boolean()
+	return b.Valid
 }
 
 // Private object
@@ -330,6 +345,12 @@ func (j *Value) sstring() *jString {
 	return s
 }
 
+// Returns true if the instance is actually a JSON object
+func (v *Value) IsObject() bool {
+	obj := v.object()
+	return obj.Valid
+}
+
 // Returns the current data as string. Fallbacks on empty string if invalid.
 // Check IsString() before using if you want to know.
 // It's good to use this same since String() conflicts with log default method
@@ -344,6 +365,12 @@ func (j *Value) AsString() (string, error) {
 	}
 
 	return s.String, err
+}
+
+// Returns true if the instance is actually a JSON string
+func (v *Value) IsString() bool {
+	s := v.sstring()
+	return s.Valid
 }
 
 // Used for logging

@@ -82,7 +82,7 @@ friends, err := v.Get("person", "friends").AsArray()
 To check if a value exist, use `Exists()`.
 
 ```go
-root.Get("person", "name").Exists()
+v.Get("person", "name").Exists()
 ```
 
 ### Loop through array
@@ -176,9 +176,7 @@ func main() {
     else if nErr == nil {
       log.Println("number value: ", n)
     }
-
   }
-
 }
 
 

@@ -105,8 +105,8 @@ Looping through an array is easy and will never return an exeption. `AsArray()` 
 
 ```go
 
-a, err := person.Get("friends").AsArray()
-for _, friend := range a {
+friends, err := person.Get("friends").AsArray()
+for _, friend := friends a {
   name := friend.Get("name").String()
   age := friend.Get("age").Number()
 }
@@ -118,8 +118,8 @@ Looping through an object is easy and will never return an exeption. `AsObject()
 
 ```go
 
-obj, err := person.Get("person").AsObject()
-for key, value := range obj {
+person, err := person.Get("person").AsObject()
+for key, value := range person {
   ...
 }
 ```

@@ -58,15 +58,16 @@ func TestFirst(t *testing.T) {
 
 	assert.True(err == nil, "failed to create json from string")
 
-	assert.True(j.Get("name").IsString() == true, "name should be a string")
-	assert.True(j.Get("name").IsObject() == false, "name should not be an object")
+	s, err := j.Get("name").AsString()
+	assert.True(s == "anton" && err == nil, "name should be a string")
+	//assert.True(j.Get("name").IsObject() == false, "name should not be an object")
 
 	assert.True(j.object().Valid, "the object should be valid")
 
 	//assert.True(j.Has("name") == true, "has name")
 	//assert.True(j.Has("name2") == false, "do not have name2")
 
-	s, err := j.Get("name").AsString()
+	s, err = j.Get("name").AsString()
 	assert.True(s == "anton" && err == nil, "name shoud match")
 
 	assert.True(j.Get("age").IsNumber() == true, "age should be a number")
@@ -81,8 +82,11 @@ func TestFirst(t *testing.T) {
 	assert.True(j.Get("nothing").Exists(), "nothing should exist")
 	assert.True(j.Get("nothing2").Exists() == false, "nothing2 should not exist")
 
-	assert.True(j.Get("address").IsObject() == true, "address should be an object")
-	assert.True(j.Get("address", "street").IsString() == true, "street should be a string")
+	address, err := j.Get("address").AsObject()
+	assert.True(address != nil && err == nil, "address should be an object")
+
+	addressAsString, err := j.Get("address").AsString()
+	assert.True(addressAsString == "" && err != nil, "address should not be an string")
 
 	s, err = j.Get("address", "street").AsString()
 	assert.True(s == "Street 42" && err == nil, "street mismatching")
@@ -93,9 +97,6 @@ func TestFirst(t *testing.T) {
 	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
 	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
 
-	assert.True(j.Get("true").IsBoolean(), "true test")
-	assert.True(j.Get("false").IsBoolean(), "true test")
-
 	b, err := j.Get("true").AsBoolean()
 	assert.True(b == true && err == nil, "bool true test")
 
@@ -105,9 +106,11 @@ func TestFirst(t *testing.T) {
 	b, err = j.Get("invalid_field").AsBoolean()
 	assert.True(b == false && err != nil, "bool invalid test")
 
-	assert.True(j.Get("list").IsArray() == true, "list should be an array")
-	assert.True(j.Get("list2").IsArray() == true, "list2 should be an array")
-	assert.True(j.Get("list2") != nil, "list2 should exist")
+	list, err := j.Get("list").AsArray()
+	assert.True(list != nil && err == nil, "list should be an array")
+
+	list2, err := j.Get("list2").AsArray()
+	assert.True(list2 != nil && err == nil, "list2 should be an array")
 
 	list2Array, err := j.Get("list2").AsArray()
 	assert.True(err == nil, "List2 should not return error on AsArray")
@@ -125,7 +128,6 @@ func TestFirst(t *testing.T) {
 	for key, value := range obj {
 
 		assert.True(key == "name", "country name key incorrect")
-		assert.True(value.IsString(), "country name should be a string")
 
 		s, err = value.AsString()
 		assert.True(s == "Sweden" && err == nil, "country name should be Sweden")

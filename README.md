@@ -167,9 +167,13 @@ func main() {
     s, sErr := value.AsString()
     n, nErr := value.AsNumber()
 
+    // If it's a string, print it
     if sErr == nil {
       log.Println("string value: ", s)
-    } else if nErr == nil {
+    } 
+
+    // If it's a number, print it
+    else if nErr == nil {
       log.Println("number value: ", n)
     }
 

@@ -2,6 +2,7 @@ package jason
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 )
 
@@ -256,9 +257,15 @@ func (j *Value) IsBoolean() bool {
 }
 
 // Returns true if the instance is actually a JSON bool.
-func (j *Value) Boolean() bool {
+func (j *Value) AsBoolean() (bool, error) {
 	b := j.boolean()
-	return b.Bool
+	var err error
+
+	if !b.Valid {
+		err = errors.New("Is not a bool")
+	}
+
+	return b.Bool, err
 }
 
 // Private object

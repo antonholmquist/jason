@@ -84,8 +84,15 @@ func TestFirst(t *testing.T) {
 
 	assert.True(j.Get("true").IsBoolean(), "true test")
 	assert.True(j.Get("false").IsBoolean(), "true test")
-	assert.True(j.Get("true").Boolean() == true, "true test")
-	assert.True(j.Get("false").Boolean() == false, "true test")
+
+	b, err := j.Get("true").AsBoolean()
+	assert.True(b == true && err == nil, "bool true test")
+
+	b, err = j.Get("false").AsBoolean()
+	assert.True(b == false && err == nil, "bool false test")
+
+	b, err = j.Get("invalid_field").AsBoolean()
+	assert.True(b == false && err != nil, "bool invalid test")
 
 	assert.True(j.Get("list").IsArray() == true, "list should be an array")
 	assert.True(j.Get("list2").IsArray() == true, "list2 should be an array")

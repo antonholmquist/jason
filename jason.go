@@ -175,9 +175,16 @@ func (j *Value) array() *jArray {
 // Returns the current data as an array of Jason values.
 // Fallbacks on empty array
 // Check IsArray() before using if you want to know.
-func (j *Value) Array() []*Value {
+func (j *Value) AsArray() ([]*Value, error) {
 	a := j.array()
-	return a.Slice
+
+	var err error
+
+	if !a.Valid {
+		err = errors.New("Is not an array")
+	}
+
+	return a.Slice, err
 }
 
 // Returns true if the instance is actually a JSON array.

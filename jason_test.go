@@ -98,7 +98,11 @@ func TestFirst(t *testing.T) {
 	assert.True(j.Get("list2").IsArray() == true, "list2 should be an array")
 	assert.True(j.Get("list2") != nil, "list2 should exist")
 
-	for _, element := range j.Get("list2").Array() {
+	list2Array, err := j.Get("list2").AsArray()
+	assert.True(err == nil, "List2 should not return error on AsArray")
+	assert.True(len(list2Array) == 2, "List2 should should have length 2")
+
+	for _, element := range list2Array {
 		assert.True(element.IsObject() == true, "first fail")
 		assert.True(element.Get("street").String() == "Street 42", "second fail")
 	}

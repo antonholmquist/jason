@@ -2,7 +2,7 @@
 
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 
-Jason intends to be an idiomatic JSON library for Go. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
+Jason intends to be an easy-to-use JSON library for Go. It's convenient for reading arbitrary JSON and is designed to be forgiving to inconsistent content. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
 
 **Note: The API will be subject to change during 2014 if there are very good reasons to do so. On January 1st 2015 it will be frozen.**
 
@@ -42,7 +42,7 @@ root, err := jason.NewFromString(s)
 
 ```
 
-### Create from a http response
+### Create from a reader (like a http response)
 
 Create a instance from a net/http response. Returns an error if the string couldn't be parsed.
 
@@ -79,11 +79,16 @@ root.Get("person", "friends").Array()
 
 ### Check if values exists
 
-To check if a value exist, use `Has()` or `Exists()`. The two examples below are identical and have different use cases.
+To check if a value exist, use `Exists()` or `Has()`. The two examples below are identical and have different use cases.
+
+```go
+root.Get("person", "name").Exists()
+```
+
+or the shorter form:
 
 ```go
 root.Has("person", "name")
-root.Get("person", "name").Exists()
 ```
 
 
@@ -117,13 +122,13 @@ for _, friend := range person.Get("friends").Array() {
 Looping through an object is easy and will never return an exeption. `Object()` returns an empty map if the value at that keypath is null (or something else than an object).
 
 ```go
-for key, value := person.Get("person").Object() {
+for key, value := range person.Get("person").Object() {
   ...
 }
 ```
 
 
-## Sample Project
+## Sample App
 
 Example project demonstrating how to parse a string.
 
@@ -163,7 +168,18 @@ func main() {
     log.Printf("child %d: %s", i, child.String())
   }
 
+  for key, value := range j.Get("other").Object() {
+    log.Println("key: ", key)
+
+    if value.IsString() {
+      log.Println("string value: ", value.String())
+    } else if value.IsNumber() {
+      log.Println("number value: ", value.Number())
+    }
+  }
+
 }
+
 ```
 
 ## Documentation

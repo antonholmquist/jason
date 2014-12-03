@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
+	"reflect"
 )
 
 type Value struct {
@@ -32,14 +34,16 @@ type jNumber struct {
 	Valid   bool
 }
 
-type jObject struct {
+type Object struct {
+	Value
 	Map   map[string]*Value
 	Valid bool
 }
 
-type jString struct {
-	String string
-	Valid  bool
+type String struct {
+	Value
+	Str   string
+	Valid bool
 }
 
 // Create a new instance from a io.reader.
@@ -109,6 +113,20 @@ func (j *Value) getPath(keys []string) *Value {
 // Example: Get("address", "street")
 func (j *Value) Get(keys ...string) *Value {
 	return j.getPath(keys)
+}
+
+// Get Object at the path, and return error if it's not
+// Can be useful in some cases
+func (v *Value) GetObject(keys ...string) (*Value, error) {
+	child := v.getPath(keys)
+
+	var err error
+
+	if !child.IsObject() {
+		err = errors.New("no object at path")
+	}
+
+	return child, err
 }
 
 /* // Not sure if we should keep this
@@ -280,7 +298,7 @@ func (v *Value) IsBoolean() bool {
 }
 
 // Private object
-func (j *Value) object() *jObject {
+func (j *Value) object() *Object {
 
 	var valid bool
 
@@ -291,7 +309,7 @@ func (j *Value) object() *jObject {
 		break
 	}
 
-	obj := new(jObject)
+	obj := new(Object)
 	obj.Valid = valid
 
 	m := make(map[string]*Value)
@@ -312,7 +330,7 @@ func (j *Value) object() *jObject {
 // Returns the current data as objects with string keys and Jason values.
 // Fallbacks on empty map if invalid.
 // Check IsObject() before using if you want to know.
-func (j *Value) AsObject() (map[string]*Value, error) {
+func (j *Value) AsObject() (*Object, error) {
 	obj := j.object()
 
 	var err error
@@ -321,10 +339,17 @@ func (j *Value) AsObject() (map[string]*Value, error) {
 		err = errors.New("Is not an object")
 	}
 
-	return obj.Map, err
+	log.Println("AsObject obj : ", reflect.TypeOf(obj))
+	log.Println("AsObject obj type: ", reflect.TypeOf(obj))
+	log.Println("AsObject obj.Map: ", obj.Map)
+	log.Println("AsObject obj.Map type: ", reflect.TypeOf(obj.Map))
+
+	log.Println("err: ", err)
+
+	return obj, err
 }
 
-func (j *Value) sstring() *jString {
+func (j *Value) sstring() *String {
 
 	var valid bool
 
@@ -335,11 +360,11 @@ func (j *Value) sstring() *jString {
 		break
 	}
 
-	s := new(jString)
+	s := new(String)
 	s.Valid = valid
 
 	if valid {
-		s.String = j.data.(string)
+		s.Str = j.data.(string)
 	}
 
 	return s
@@ -354,7 +379,7 @@ func (v *Value) IsObject() bool {
 // Returns the current data as string. Fallbacks on empty string if invalid.
 // Check IsString() before using if you want to know.
 // It's good to use this same since String() conflicts with log default method
-func (j *Value) AsString() (string, error) {
+func (j *Value) AsString() (*String, error) {
 
 	s := j.sstring()
 
@@ -364,13 +389,18 @@ func (j *Value) AsString() (string, error) {
 		err = errors.New("Is not a string")
 	}
 
-	return s.String, err
+	return s, err
 }
 
 // Returns true if the instance is actually a JSON string
 func (v *Value) IsString() bool {
 	s := v.sstring()
 	return s.Valid
+}
+
+// Used for logging
+func (j *String) String() string {
+	return j.Str
 }
 
 // Used for logging

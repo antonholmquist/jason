@@ -20,7 +20,7 @@ The following golang values are used for the JSON data types. It is consistent w
 ## Install
 
 ```shell
-go get github.com/antonholmquist/jason`
+go get github.com/antonholmquist/jason
 ```
 
 ## Import

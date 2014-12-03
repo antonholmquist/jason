@@ -19,18 +19,21 @@ type Array struct {
 }
 
 // Private bool
-type jBool struct {
-	Bool  bool
+type Boolean struct {
+	Value
+	b     bool
 	Valid bool
 }
 
-type jNull struct {
+type Null struct {
+	Value
 	Valid bool
 }
 
-type jNumber struct {
-	Float64 float64
-	Valid   bool
+type Number struct {
+	Value
+	f     float64
+	Valid bool
 }
 
 type Object struct {
@@ -143,7 +146,7 @@ func (j *Value) Has(keys ...string) bool {
 }
 */
 
-func (j *Value) null() *jNull {
+func (j *Value) null() (*Null, error) {
 
 	var valid bool
 
@@ -154,17 +157,20 @@ func (j *Value) null() *jNull {
 		break
 	}
 
-	n := new(jNull)
-	n.Valid = valid && j.exists // We also need to check that it actually exists here to separate nil and non-existing values
-	//n.data = j.data
+	if valid {
+		n := new(Null)
+		n.Valid = valid && j.exists // We also need to check that it actually exists here to separate nil and non-existing values
+		n.data = j.data
+		return n, nil
+	}
 
-	return n
+	return nil, errors.New("is not null")
 }
 
 // Returns true if the instance is actually a JSON null object.
 func (j *Value) IsNull() bool {
-	n := j.null()
-	return n.Valid
+	_, err := j.null()
+	return err == nil
 }
 
 func (j *Value) array() *Array {
@@ -218,7 +224,7 @@ func (j *Value) IsArray() bool {
 	return a.Valid
 }
 
-func (j *Value) number() *jNumber {
+func (j *Value) number() (*Number, error) {
 
 	var valid bool
 
@@ -229,46 +235,40 @@ func (j *Value) number() *jNumber {
 		break
 	}
 
-	n := new(jNumber)
-	n.Valid = valid
-
 	if valid {
-		n.Float64 = j.data.(float64)
+		n := new(Number)
+		n.Valid = valid
+		n.f = j.data.(float64)
+		n.data = j.data
+		return n, nil
 	}
 
-	return n
+	return nil, errors.New("not a number")
 }
 
-func (j *Value) AsNumber() (float64, error) {
-	n := j.number()
-
-	var err error
-
-	if !n.Valid {
-		err = errors.New("Is not a number")
-	}
-
-	return n.Float64, err
+func (j *Value) AsNumber() (*Number, error) {
+	return j.number()
 }
 
 func (j *Value) IsNumber() bool {
-	n := j.number()
-	return n.Valid
+	_, err := j.number()
+	return err == nil
 }
 
 // Returns the same as Number()
-func (j *Value) AsFloat64() (float64, error) {
-	return j.AsNumber()
+func (j *Number) Float64() float64 {
+	n, _ := j.number()
+	return n.f
 }
 
 // Returns the Number() converted to an int64
-func (j *Value) AsInt64() (int64, error) {
-	f, err := j.AsNumber()
-	return int64(f), err
+func (j *Value) Int64() int64 {
+	n, _ := j.number()
+	return int64(n.f)
 }
 
 // Private
-func (j *Value) boolean() *jBool {
+func (j *Value) boolean() (*Boolean, error) {
 
 	var valid bool
 
@@ -279,31 +279,31 @@ func (j *Value) boolean() *jBool {
 		break
 	}
 
-	b := new(jBool)
-	b.Valid = valid
-
 	if valid {
-		b.Bool = j.data.(bool)
+		b := new(Boolean)
+		b.Valid = valid
+		b.data = j.data
+		b.b = j.data.(bool)
+		return b, nil
 	}
 
-	return b
+	return nil, errors.New("no bool")
+}
+
+// Returns the Number() converted to an int64
+func (j *Boolean) Boolean() bool {
+	b, _ := j.boolean()
+	return b.b
 }
 
 // Returns true if the instance is actually a JSON bool.
-func (j *Value) AsBoolean() (bool, error) {
-	b := j.boolean()
-	var err error
-
-	if !b.Valid {
-		err = errors.New("Is not a bool")
-	}
-
-	return b.Bool, err
+func (j *Value) AsBoolean() (*Boolean, error) {
+	return j.boolean()
 }
 
 func (v *Value) IsBoolean() bool {
-	b := v.boolean()
-	return b.Valid
+	_, err := v.boolean()
+	return err == nil
 }
 
 // Private object

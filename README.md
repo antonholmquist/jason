@@ -60,7 +60,7 @@ name, err := v.Get("name").AsString()
 age, err := v.Get("age").AsNumber()
 verified, err := v.Get("verified").AsBoolean()
 education, err := v.Get("education").AsObject()
-friends,err := v.Get("friends").AsArray()
+friends, err := v.Get("friends").AsArray()
 
 ```
 
@@ -139,29 +139,39 @@ func main() {
     }
   }`
 
-  j, _ := jason.NewFromString(exampleJSON)
+  v, _ := jason.NewValueFromString(exampleJSON)
 
-  log.Println("name:", j.Get("name").String())
-  log.Println("age:", j.Get("age").Number())
+  name, _ := v.Get("name").AsString()
+  age, _ := v.Get("name").AsNumber()
+  occupation, _ := v.Get("other", "occupation").AsString()
+  years, _ := v.Get("other", "years").AsNumber()
 
-  log.Println("occupation:", j.Get("other", "occupation").String())
-  log.Println("years:", j.Get("other", "years").Number())
+  log.Println("age:", age)
+  log.Println("name:", name)
+  log.Println("occupation:", occupation)
+  log.Println("years:", years)
 
-  for i, child := range j.Get("children").Array() {
+  children, _ := v.Get("children").AsArray()
+  for i, child := range children {
     log.Printf("child %d: %s", i, child.String())
   }
 
-  for key, value := range j.Get("other").Object() {
-    log.Println("key: ", key)
+  others, _ := v.Get("other").AsObject()
+  for _, value := range others {
 
-    if value.IsString() {
-      log.Println("string value: ", value.String())
-    } else if value.IsNumber() {
-      log.Println("number value: ", value.Number())
+    s, sErr := value.AsString()
+    n, nErr := value.AsNumber()
+
+    if sErr == nil {
+      log.Println("string value: ", s)
+    } else if nErr == nil {
+      log.Println("number value: ", n)
     }
+
   }
 
 }
+
 
 ```
 

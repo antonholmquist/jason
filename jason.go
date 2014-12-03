@@ -12,8 +12,9 @@ type Value struct {
 }
 
 // Private array
-type jArray struct {
-	Slice []*Value
+type Array struct {
+	Value
+	slice []*Value // The formatted slice with typed values
 	Valid bool
 }
 
@@ -34,8 +35,16 @@ type jNumber struct {
 
 type Object struct {
 	Value
-	Map   map[string]*Value
+	m     map[string]*Value // The formatted map with typed values
 	Valid bool
+}
+
+func (v *Object) Map() map[string]*Value {
+	return v.m
+}
+
+func (v *Array) Slice() []*Value {
+	return v.slice
 }
 
 type String struct {
@@ -88,7 +97,7 @@ func (j *Value) get(key string) *Value {
 
 	// Only continue if it really is an object
 	if obj.Valid {
-		child, ok := obj.Map[key]
+		child, ok := obj.Map()[key]
 		if ok {
 			return child
 		}
@@ -147,6 +156,7 @@ func (j *Value) null() *jNull {
 
 	n := new(jNull)
 	n.Valid = valid && j.exists // We also need to check that it actually exists here to separate nil and non-existing values
+	//n.data = j.data
 
 	return n
 }
@@ -157,7 +167,7 @@ func (j *Value) IsNull() bool {
 	return n.Valid
 }
 
-func (j *Value) array() *jArray {
+func (j *Value) array() *Array {
 
 	var valid bool
 
@@ -168,7 +178,7 @@ func (j *Value) array() *jArray {
 		break
 	}
 
-	a := new(jArray)
+	a := new(Array)
 	a.Valid = valid
 
 	// Unsure if this is a good way to use slices, it's probably not
@@ -182,7 +192,8 @@ func (j *Value) array() *jArray {
 		}
 	}
 
-	a.Slice = slice
+	a.slice = slice
+	a.data = j.data
 
 	return a
 }
@@ -190,7 +201,7 @@ func (j *Value) array() *jArray {
 // Returns the current data as an array of Jason values.
 // Fallbacks on empty array
 // Check IsArray() before using if you want to know.
-func (j *Value) AsArray() ([]*Value, error) {
+func (j *Value) AsArray() (*Array, error) {
 	a := j.array()
 
 	var err error
@@ -199,7 +210,7 @@ func (j *Value) AsArray() ([]*Value, error) {
 		err = errors.New("Is not an array")
 	}
 
-	return a.Slice, err
+	return a, err
 }
 
 func (j *Value) IsArray() bool {
@@ -317,10 +328,12 @@ func (j *Value) object() *Object {
 
 		for key, element := range j.data.(map[string]interface{}) {
 			m[key] = &Value{element, true}
+
 		}
 	}
 
-	obj.Map = m
+	obj.data = j.data
+	obj.m = m
 
 	return obj
 }
@@ -340,7 +353,7 @@ func (j *Value) AsObject() (*Object, error) {
 	return obj, err
 }
 
-func (j *Value) sstring() *String {
+func (j *Value) sstring() (*String, error) {
 
 	var valid bool
 
@@ -351,14 +364,15 @@ func (j *Value) sstring() *String {
 		break
 	}
 
-	s := new(String)
-	s.Valid = valid
-
 	if valid {
+		s := new(String)
+		s.Valid = valid
 		s.Str = j.data.(string)
+		s.data = j.data
+		return s, nil
 	}
 
-	return s
+	return nil, errors.New("not a string")
 }
 
 // Returns true if the instance is actually a JSON object
@@ -372,26 +386,30 @@ func (v *Value) IsObject() bool {
 // It's good to use this same since String() conflicts with log default method
 func (j *Value) AsString() (*String, error) {
 
-	s := j.sstring()
+	return j.sstring()
 
-	var err error
+	/*
+		s := j.sstring()
 
-	if !s.Valid {
-		err = errors.New("Is not a string")
-	}
+		var err error
 
-	return s, err
+		if !s.Valid {
+			err = errors.New("Is not a string")
+		}
+
+		return s, err
+	*/
 }
 
 // Returns true if the instance is actually a JSON string
 func (v *Value) IsString() bool {
-	s := v.sstring()
-	return s.Valid
+	_, err := v.sstring()
+	return err == nil
 }
 
 // Used for logging
 func (j *String) String() string {
-	return j.Str
+	return j.data.(string)
 }
 
 // Used for logging

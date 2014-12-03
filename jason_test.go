@@ -56,9 +56,13 @@ func TestFirst(t *testing.T) {
 
 	j, err := NewValueFromString(testJSON)
 
+	a, err := j.Get("address").AsObject() // .Get("street").AsString()
+	assert.True(a != nil && err == nil, "failed to create json from string")
+
 	assert.True(err == nil, "failed to create json from string")
 
 	s, err := j.Get("name").AsString()
+
 	assert.True(s.String() == "anton" && err == nil, "name should be a string")
 	//assert.True(j.Get("name").IsObject() == false, "name should not be an object")
 
@@ -69,6 +73,10 @@ func TestFirst(t *testing.T) {
 
 	s, err = j.Get("name").AsString()
 	assert.True(s.String() == "anton" && err == nil, "name shoud match")
+
+	s, err = j.Get("address", "street").AsString()
+	assert.True(s.String() == "Street 42" && err == nil, "street shoud match")
+	//log.Println("s: ", s.String())
 
 	_, err = j.Get("age").AsNumber()
 	assert.True(err == nil, "age should be a number")
@@ -86,14 +94,21 @@ func TestFirst(t *testing.T) {
 	address, err := j.Get("address").AsObject()
 	assert.True(address != nil && err == nil, "address should be an object")
 
+	//log.Println("address: ", address)
+
+	s, err = address.Get("street").AsString()
+
+	log.Println("s: ", address)
+	log.Println("err: ", err)
+
 	addressAsString, err := j.Get("address").AsString()
-	assert.True(addressAsString.String() == "" && err != nil, "address should not be an string")
+	assert.True(addressAsString == nil && err != nil, "address should not be an string")
 
 	s, err = j.Get("address", "street").AsString()
 	assert.True(s.String() == "Street 42" && err == nil, "street mismatching")
 
 	s, err = j.Get("address", "name2").AsString()
-	assert.True(s.String() == "" && err != nil, "nonexistent string fail")
+	assert.True(s == nil && err != nil, "nonexistent string fail")
 
 	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
 	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
@@ -115,9 +130,9 @@ func TestFirst(t *testing.T) {
 
 	list2Array, err := j.Get("list2").AsArray()
 	assert.True(err == nil, "List2 should not return error on AsArray")
-	assert.True(len(list2Array) == 2, "List2 should should have length 2")
+	assert.True(len(list2Array.Slice()) == 2, "List2 should should have length 2")
 
-	for _, element := range list2Array {
+	for _, element := range list2Array.Slice() {
 		//assert.True(element.IsObject() == true, "first fail")
 
 		s, err = element.Get("street").AsString()
@@ -126,7 +141,7 @@ func TestFirst(t *testing.T) {
 
 	obj, err := j.Get("country").AsObject()
 	assert.True(obj != nil && err == nil, "country should not return error on AsObject")
-	for key, value := range obj.Map {
+	for key, value := range obj.Map() {
 
 		assert.True(key == "name", "country name key incorrect")
 

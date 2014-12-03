@@ -125,9 +125,9 @@ import (
 
 func main() {
 
+  // Create example json
   exampleJSON := `{
     "name": "Walter White",
-
     "age": 51,
     "children": [
       "junior",
@@ -139,23 +139,28 @@ func main() {
     }
   }`
 
+  // Get root value from string
   v, _ := jason.NewValueFromString(exampleJSON)
 
+  // Read base content
   name, _ := v.Get("name").AsString()
   age, _ := v.Get("name").AsNumber()
   occupation, _ := v.Get("other", "occupation").AsString()
   years, _ := v.Get("other", "years").AsNumber()
 
+  // Log base content
   log.Println("age:", age)
   log.Println("name:", name)
   log.Println("occupation:", occupation)
   log.Println("years:", years)
 
+  // Loop through children array
   children, _ := v.Get("children").AsArray()
   for i, child := range children {
     log.Printf("child %d: %s", i, child.String())
   }
 
+  // Loop through others object
   others, _ := v.Get("other").AsObject()
   for _, value := range others {
 

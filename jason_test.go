@@ -54,7 +54,7 @@ func TestFirst(t *testing.T) {
     }
   }`
 
-	j, err := NewFromString(testJSON)
+	j, err := NewValueFromString(testJSON)
 
 	assert.True(err == nil, "failed to create json from string")
 

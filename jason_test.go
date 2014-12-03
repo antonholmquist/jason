@@ -48,6 +48,9 @@ func TestFirst(t *testing.T) {
     "address": {
       "street": "Street 42",
       "city": "Stockholm"
+    },
+    "country": {
+      "name": "Sweden"
     }
   }`
 
@@ -89,9 +92,14 @@ func TestFirst(t *testing.T) {
 	assert.True(j.Get("list2") != nil, "list2 should exist")
 
 	for _, element := range j.Get("list2").Array() {
-
 		assert.True(element.IsObject() == true, "first fail")
 		assert.True(element.Get("street").String() == "Street 42", "second fail")
+	}
 
+	for key, value := range j.Get("country").Object() {
+
+		assert.True(key == "name", "country name key incorrect")
+		assert.True(value.IsString(), "country name should be a string")
+		assert.True(value.String() == "Sweden", "country name should be Sweden")
 	}
 }

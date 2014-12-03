@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log"
-	"reflect"
 )
 
 type Value struct {
@@ -338,13 +336,6 @@ func (j *Value) AsObject() (*Object, error) {
 	if !obj.Valid {
 		err = errors.New("Is not an object")
 	}
-
-	log.Println("AsObject obj : ", reflect.TypeOf(obj))
-	log.Println("AsObject obj type: ", reflect.TypeOf(obj))
-	log.Println("AsObject obj.Map: ", obj.Map)
-	log.Println("AsObject obj.Map type: ", reflect.TypeOf(obj.Map))
-
-	log.Println("err: ", err)
 
 	return obj, err
 }

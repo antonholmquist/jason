@@ -111,10 +111,12 @@ func (j *Value) Get(keys ...string) *Value {
 	return j.getPath(keys)
 }
 
+/* // Not sure if we should keep this
 // Determine if key path exists
 func (j *Value) Has(keys ...string) bool {
 	return j.getPath(keys).Exists()
 }
+*/
 
 func (j *Value) null() *jNull {
 

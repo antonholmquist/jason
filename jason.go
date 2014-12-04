@@ -237,20 +237,14 @@ func (v *Value) GetBoolean(keys ...string) (*Boolean, error) {
 	return nil, nil
 }
 
-func (v *Value) GetArray(keys ...string) (*Array, error) {
+func (v *Value) GetArray(keys ...string) ([]*Value, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
 		return nil, err
 	} else {
 
-		obj, err := child.AsArray()
-
-		if err != nil {
-			return nil, err
-		} else {
-			return obj, nil
-		}
+		return child.AsArray()
 
 	}
 
@@ -324,8 +318,7 @@ func (j *Value) array() *Array {
 
 // Returns the current data as an array of Jason values.
 // Fallbacks on empty array
-// Check IsArray() before using if you want to know.
-func (j *Value) AsArray() (*Array, error) {
+func (j *Value) AsArray() ([]*Value, error) {
 	a := j.array()
 
 	var err error
@@ -334,7 +327,7 @@ func (j *Value) AsArray() (*Array, error) {
 		err = errors.New("Is not an array")
 	}
 
-	return a, err
+	return a.slice, err
 }
 
 func (j *Value) IsArray() bool {

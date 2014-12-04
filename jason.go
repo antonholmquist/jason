@@ -197,24 +197,24 @@ func (v *Value) GetString(keys ...string) (string, error) {
 	return "", nil
 }
 
-func (v *Value) GetNumber(keys ...string) (*Number, error) {
+func (v *Value) GetNumber(keys ...string) (float64, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
-		return nil, err
+		return 0, err
 	} else {
 
-		obj, err := child.AsNumber()
+		n, err := child.AsNumber()
 
 		if err != nil {
-			return nil, err
+			return 0, err
 		} else {
-			return obj, nil
+			return n, nil
 		}
 
 	}
 
-	return nil, nil
+	return 0, nil
 }
 
 func (v *Value) GetBoolean(keys ...string) (*Boolean, error) {
@@ -330,11 +330,6 @@ func (j *Value) AsArray() ([]*Value, error) {
 	return a.slice, err
 }
 
-func (j *Value) IsArray() bool {
-	a := j.array()
-	return a.Valid
-}
-
 func (j *Value) number() (*Number, error) {
 
 	var valid bool
@@ -357,25 +352,14 @@ func (j *Value) number() (*Number, error) {
 	return nil, errors.New("not a number")
 }
 
-func (j *Value) AsNumber() (*Number, error) {
-	return j.number()
-}
+func (j *Value) AsNumber() (float64, error) {
+	n, err := j.number()
 
-func (j *Value) IsNumber() bool {
-	_, err := j.number()
-	return err == nil
-}
+	if err != nil {
+		return 0, err
+	}
 
-// Returns the same as Number()
-func (j *Number) Float64() float64 {
-	n, _ := j.number()
-	return n.f
-}
-
-// Returns the Number() converted to an int64
-func (j *Value) Int64() int64 {
-	n, _ := j.number()
-	return int64(n.f)
+	return n.f, nil
 }
 
 // Private

@@ -85,7 +85,7 @@ func TestFirst(t *testing.T) {
 	assert.True(err == nil, "age should be a number")
 
 	n, err := j.GetNumber("age")
-	assert.True(n.Float64() == 29.0 && err == nil, "age mismatch")
+	assert.True(n == 29.0 && err == nil, "age mismatch")
 
 	age, err := j.Get("age")
 	assert.True(age != nil && err == nil, "age should exist")

@@ -11,35 +11,9 @@ type Value struct {
 	exists bool // Used to separate nil and non-existing values
 }
 
-// Private array
-type Array struct {
-	Value
-	slice []*Value // The formatted slice with typed values
-	Valid bool
-}
-
-type Null struct {
-	Value
-	Valid bool
-}
-
 type Object struct {
 	Value
-	m     map[string]*Value // The formatted map with typed values
-	Valid bool
-}
-
-func (v *Object) Map() map[string]*Value {
-	return v.m
-}
-
-func (v *Array) Slice() []*Value {
-	return v.slice
-}
-
-type String struct {
-	Value
-	Str   string
+	Map   map[string]*Value // The formatted map with typed values
 	Valid bool
 }
 
@@ -81,7 +55,7 @@ func (j *Value) get(key string) (*Value, error) {
 
 	// Only continue if it really is an object
 	if obj.Valid {
-		child, ok := obj.Map()[key]
+		child, ok := obj.Map[key]
 		if ok {
 			return child, nil
 		}
@@ -141,13 +115,7 @@ func (v *Value) GetString(keys ...string) (string, error) {
 		return "", err
 	} else {
 
-		obj, err := child.sstring()
-
-		if err != nil {
-			return "", err
-		} else {
-			return obj.AsString()
-		}
+		return child.AsString()
 
 	}
 
@@ -198,42 +166,24 @@ func (v *Value) GetArray(keys ...string) ([]*Value, error) {
 	return nil, nil
 }
 
-/* // Not sure if we should keep this
-// Determine if key path exists
-func (j *Value) Has(keys ...string) bool {
-	return j.getPath(keys).Exists()
-}
-*/
-
-func (j *Value) null() (*Null, error) {
-
+// Returns true if the instance is actually a JSON null object.
+func (j *Value) IsNull() bool {
 	var valid bool
 
 	// Check the type of this data
 	switch j.data.(type) {
 	case nil:
-		valid = true
+		valid = j.exists // Valid only if j also exists, since other values could possibly also be nil
 		break
 	}
 
-	if valid {
-		n := new(Null)
-		n.Valid = valid && j.exists // We also need to check that it actually exists here to separate nil and non-existing values
-		n.data = j.data
-		return n, nil
-	}
+	return valid
 
-	return nil, errors.New("is not null")
 }
 
-// Returns true if the instance is actually a JSON null object.
-func (j *Value) IsNull() bool {
-	_, err := j.null()
-	return err == nil
-}
-
-func (j *Value) array() *Array {
-
+// Returns the current data as an array of Jason values.
+// Fallbacks on empty array
+func (j *Value) AsArray() ([]*Value, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -242,9 +192,6 @@ func (j *Value) array() *Array {
 		valid = true
 		break
 	}
-
-	a := new(Array)
-	a.Valid = valid
 
 	// Unsure if this is a good way to use slices, it's probably not
 	var slice []*Value
@@ -255,26 +202,12 @@ func (j *Value) array() *Array {
 			child := Value{element, true}
 			slice = append(slice, &child)
 		}
+
+		return slice, nil
 	}
 
-	a.slice = slice
-	a.data = j.data
+	return slice, errors.New("Not an array")
 
-	return a
-}
-
-// Returns the current data as an array of Jason values.
-// Fallbacks on empty array
-func (j *Value) AsArray() ([]*Value, error) {
-	a := j.array()
-
-	var err error
-
-	if !a.Valid {
-		err = errors.New("Is not an array")
-	}
-
-	return a.slice, err
 }
 
 func (j *Value) AsNumber() (float64, error) {
@@ -339,7 +272,7 @@ func (j *Value) object() *Object {
 	}
 
 	obj.data = j.data
-	obj.m = m
+	obj.Map = m
 
 	return obj
 }
@@ -359,8 +292,10 @@ func (j *Value) AsObject() (*Object, error) {
 	return obj, err
 }
 
-func (j *Value) sstring() (*String, error) {
-
+// Returns the current data as string. Fallbacks on empty string if invalid.
+// Check IsString() before using if you want to know.
+// It's good to use this same since String() conflicts with log default method
+func (j *Value) AsString() (string, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -371,54 +306,14 @@ func (j *Value) sstring() (*String, error) {
 	}
 
 	if valid {
-		s := new(String)
-		s.Valid = valid
-		s.Str = j.data.(string)
-		s.data = j.data
-		return s, nil
+		return j.data.(string), nil
 	}
 
-	return nil, errors.New("not a string")
+	return "", errors.New("not a string")
 }
 
-// Returns true if the instance is actually a JSON object
-func (v *Value) IsObject() bool {
-	obj := v.object()
-	return obj.Valid
-}
-
-// Returns the current data as string. Fallbacks on empty string if invalid.
-// Check IsString() before using if you want to know.
-// It's good to use this same since String() conflicts with log default method
-func (j *Value) AsString() (string, error) {
-	s, err := j.sstring()
-	return s.String(), err
-
-	/*
-		s := j.sstring()
-
-		var err error
-
-		if !s.Valid {
-			err = errors.New("Is not a string")
-		}
-
-		return s, err
-	*/
-}
-
-// Returns true if the instance is actually a JSON string
-func (v *Value) IsString() bool {
-	_, err := v.sstring()
-	return err == nil
-}
-
-// Used for logging
-func (j *String) String() string {
-	return j.data.(string)
-}
-
-// Used for logging
+// The method named String() is used by golang's log method for logging
+// We therefore send the json
 func (j *Value) String() string {
 	f, err := json.Marshal(j.data)
 	if err != nil {

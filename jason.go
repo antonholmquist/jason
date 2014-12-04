@@ -177,24 +177,24 @@ func (v *Value) GetObject(keys ...string) (*Object, error) {
 	return nil, nil
 }
 
-func (v *Value) GetString(keys ...string) (*String, error) {
+func (v *Value) GetString(keys ...string) (string, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	} else {
 
-		obj, err := child.AsString()
+		obj, err := child.sstring()
 
 		if err != nil {
-			return nil, err
+			return "", err
 		} else {
-			return obj, nil
+			return obj.AsString()
 		}
 
 	}
 
-	return nil, nil
+	return "", nil
 }
 
 func (v *Value) GetNumber(keys ...string) (*Number, error) {
@@ -502,9 +502,9 @@ func (v *Value) IsObject() bool {
 // Returns the current data as string. Fallbacks on empty string if invalid.
 // Check IsString() before using if you want to know.
 // It's good to use this same since String() conflicts with log default method
-func (j *Value) AsString() (*String, error) {
-
-	return j.sstring()
+func (j *Value) AsString() (string, error) {
+	s, err := j.sstring()
+	return s.String(), err
 
 	/*
 		s := j.sstring()

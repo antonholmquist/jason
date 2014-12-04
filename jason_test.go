@@ -66,7 +66,7 @@ func TestFirst(t *testing.T) {
 
 	s, err := j.GetString("name")
 
-	assert.True(s.String() == "anton" && err == nil, "name should be a string")
+	assert.True(s == "anton" && err == nil, "name should be a string")
 	//assert.True(j.Get("name").IsObject() == false, "name should not be an object")
 
 	assert.True(j.object().Valid, "the object should be valid")
@@ -75,10 +75,10 @@ func TestFirst(t *testing.T) {
 	//assert.True(j.Has("name2") == false, "do not have name2")
 
 	s, err = j.GetString("name")
-	assert.True(s.String() == "anton" && err == nil, "name shoud match")
+	assert.True(s == "anton" && err == nil, "name shoud match")
 
 	s, err = j.GetString("address", "street")
-	assert.True(s.String() == "Street 42" && err == nil, "street shoud match")
+	assert.True(s == "Street 42" && err == nil, "street shoud match")
 	//log.Println("s: ", s.String())
 
 	_, err = j.GetNumber("age")
@@ -101,13 +101,13 @@ func TestFirst(t *testing.T) {
 	s, err = address.GetString("street")
 
 	addressAsString, err := j.GetString("address")
-	assert.True(addressAsString == nil && err != nil, "address should not be an string")
+	assert.True(addressAsString == "" && err != nil, "address should not be an string")
 
 	s, err = j.GetString("address", "street")
-	assert.True(s.String() == "Street 42" && err == nil, "street mismatching")
+	assert.True(s == "Street 42" && err == nil, "street mismatching")
 
 	s, err = j.GetString("address", "name2")
-	assert.True(s == nil && err != nil, "nonexistent string fail")
+	assert.True(s == "" && err != nil, "nonexistent string fail")
 
 	b, err := j.GetBoolean("true")
 	assert.True(b.Boolean() == true && err == nil, "bool true test")
@@ -134,7 +134,7 @@ func TestFirst(t *testing.T) {
 		element, err := elementValue.AsObject()
 
 		s, err = element.GetString("street")
-		assert.True(s.String() == "Street 42" && err == nil, "second fail")
+		assert.True(s == "Street 42" && err == nil, "second fail")
 	}
 
 	obj, err := j.GetObject("country")
@@ -144,6 +144,6 @@ func TestFirst(t *testing.T) {
 		assert.True(key == "name", "country name key incorrect")
 
 		s, err = value.AsString()
-		assert.True(s.String() == "Sweden" && err == nil, "country name should be Sweden")
+		assert.True(s == "Sweden" && err == nil, "country name should be Sweden")
 	}
 }

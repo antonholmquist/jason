@@ -93,7 +93,7 @@ func (j *Value) Marshal() ([]byte, error) {
 }
 
 // Private Get
-func (j *Value) get(key string) *Value {
+func (j *Value) get(key string) (*Value, error) {
 
 	// Assume this is an object
 	obj := j.object()
@@ -102,41 +102,94 @@ func (j *Value) get(key string) *Value {
 	if obj.Valid {
 		child, ok := obj.Map()[key]
 		if ok {
-			return child
+			return child, nil
 		}
 	}
 
-	return &Value{nil, false}
+	return nil, errors.New("could not get")
 
 }
 
 // Private to get path
-func (j *Value) getPath(keys []string) *Value {
+func (j *Value) getPath(keys []string) (*Value, error) {
 	current := j
 	for _, key := range keys {
-		current = current.get(key)
+		current, err := current.get(key)
+
+		if err != nil {
+			return nil, err
+		}
 	}
-	return current
+	return current, nil
 }
 
 // Get key or key path. Returns a new Value instance.
 // Example: Get("address", "street")
-func (j *Value) Get(keys ...string) *Value {
+func (j *Value) Get(keys ...string) (*Value, error) {
 	return j.getPath(keys)
 }
 
 // Get Object at the path, and return error if it's not
 // Can be useful in some cases
-func (v *Value) GetObject(keys ...string) (*Value, error) {
-	child := v.getPath(keys)
 
-	var err error
+func (v *Value) GetObject(keys ...string) (*Object, error) {
+	child, err := v.getPath(keys)
 
-	if !child.IsObject() {
-		err = errors.New("no object at path")
+	if err != nil {
+		return nil, err
+	} else {
+
+		obj, err := child.AsObject()
+
+		if err != nil {
+			return nil, err
+		} else {
+			return obj, nil
+		}
+
 	}
 
-	return child, err
+	return nil, nil
+}
+
+func (v *Value) GetString(keys ...string) (*String, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		obj, err := child.AsString()
+
+		if err != nil {
+			return nil, err
+		} else {
+			return obj, nil
+		}
+
+	}
+
+	return nil, nil
+}
+
+func (v *Value) GetNumber(keys ...string) (*Number, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		obj, err := child.AsNumber()
+
+		if err != nil {
+			return nil, err
+		} else {
+			return obj, nil
+		}
+
+	}
+
+	return nil, nil
 }
 
 /* // Not sure if we should keep this

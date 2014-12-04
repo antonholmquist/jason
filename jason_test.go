@@ -56,12 +56,12 @@ func TestFirst(t *testing.T) {
 
 	j, err := NewValueFromString(testJSON)
 
-	a, err := j.Get("address").AsObject() // .Get("street").AsString()
+	a, err := j.GetObject("address")
 	assert.True(a != nil && err == nil, "failed to create json from string")
 
 	assert.True(err == nil, "failed to create json from string")
 
-	s, err := j.Get("name").AsString()
+	s, err := j.GetString("name")
 
 	assert.True(s.String() == "anton" && err == nil, "name should be a string")
 	//assert.True(j.Get("name").IsObject() == false, "name should not be an object")
@@ -71,40 +71,39 @@ func TestFirst(t *testing.T) {
 	//assert.True(j.Has("name") == true, "has name")
 	//assert.True(j.Has("name2") == false, "do not have name2")
 
-	s, err = j.Get("name").AsString()
+	s, err = j.GetString("name")
 	assert.True(s.String() == "anton" && err == nil, "name shoud match")
 
-	s, err = j.Get("address", "street").AsString()
+	s, err = j.GetString("address", "street")
 	assert.True(s.String() == "Street 42" && err == nil, "street shoud match")
 	//log.Println("s: ", s.String())
 
-	_, err = j.Get("age").AsNumber()
+	_, err = j.GetNumber("age")
 	assert.True(err == nil, "age should be a number")
 
-	n, err := j.Get("age").AsNumber()
+	n, err := j.GetNumber("age")
 	assert.True(n.Float64() == 29.0 && err == nil, "age mismatch")
-	assert.True(j.Get("age").Exists(), "age should exist")
-	assert.True(j.Get("age2").Exists() == false, "age2 should not exist")
 
-	assert.True(j.Get("nothing").IsNull(), "nothing should be null")
-	//assert.True(j.Get("nothing2") == nil, "nothing2 fail")
-	assert.True(j.Get("nothing").Exists(), "nothing should exist")
-	//assert.True(j.Get("nothing2") == nil, "nothing2 should not exist")
+	age, err := j.Get("age")
+	assert.True(age != nil && err == nil, "age should exist")
 
-	address, err := j.Get("address").AsObject()
+	age2, err := j.Get("age2")
+	assert.True(age2 == nil && err != nil, "age2 should not exist")
+
+	address, err := j.GetObject("address")
 	assert.True(address != nil && err == nil, "address should be an object")
 
 	//log.Println("address: ", address)
 
-	s, err = address.Get("street").AsString()
+	s, err = address.GetString("street")
 
-	addressAsString, err := j.Get("address").AsString()
+	addressAsString, err := j.GetString("address")
 	assert.True(addressAsString == nil && err != nil, "address should not be an string")
 
-	s, err = j.Get("address", "street").AsString()
+	s, err = j.GetString("address", "street")
 	assert.True(s.String() == "Street 42" && err == nil, "street mismatching")
 
-	s, err = j.Get("address", "name2").AsString()
+	s, err = j.GetString("address", "name2")
 	assert.True(s == nil && err != nil, "nonexistent string fail")
 
 	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")

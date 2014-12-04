@@ -144,3 +144,93 @@ func TestFirst(t *testing.T) {
 		assert.True(s == "Sweden" && err == nil, "country name should be Sweden")
 	}
 }
+
+func TestSecond(t *testing.T) {
+	json := `
+  {
+   "data": [
+      {
+         "id": "X999_Y999",
+         "from": {
+            "name": "Tom Brady", "id": "X12"
+         },
+         "message": "Looking forward to 2010!",
+         "actions": [
+            {
+               "name": "Comment",
+               "link": "http://www.facebook.com/X999/posts/Y999"
+            },
+            {
+               "name": "Like",
+               "link": "http://www.facebook.com/X999/posts/Y999"
+            }
+         ],
+         "type": "status",
+         "created_time": "2010-08-02T21:27:44+0000",
+         "updated_time": "2010-08-02T21:27:44+0000"
+      },
+      {
+         "id": "X998_Y998",
+         "from": {
+            "name": "Peyton Manning", "id": "X18"
+         },
+         "message": "Where's my contract?",
+         "actions": [
+            {
+               "name": "Comment",
+               "link": "http://www.facebook.com/X998/posts/Y998"
+            },
+            {
+               "name": "Like",
+               "link": "http://www.facebook.com/X998/posts/Y998"
+            }
+         ],
+         "type": "status",
+         "created_time": "2010-08-02T21:27:44+0000",
+         "updated_time": "2010-08-02T21:27:44+0000"
+      }
+   ]
+  }`
+
+	assert := NewAssert(t)
+	j, err := NewValueFromString(json)
+
+	assert.True(j != nil && err == nil, "failed to parse json")
+
+	dataObject, err := j.GetObject("data")
+	assert.True(dataObject == nil && err != nil, "data should not be an object")
+
+	dataArray, err := j.GetArray("data")
+	assert.True(dataArray != nil && err == nil, "data should not be an object")
+
+	for index, dataItem := range dataArray {
+
+		if index == 0 {
+			id, err := dataItem.GetString("id")
+			assert.True(id == "X999_Y999" && err == nil, "item id mismatch")
+
+			fromName, err := dataItem.GetString("from", "name")
+			assert.True(fromName == "Tom Brady" && err == nil, "fromName mismatch")
+
+			actions, err := dataItem.GetArray("actions")
+
+			for index, action := range actions {
+
+				if index == 1 {
+					name, err := action.GetString("name")
+					assert.True(name == "Like" && err == nil, "name mismatch")
+
+					link, err := action.GetString("link")
+					assert.True(link == "http://www.facebook.com/X999/posts/Y999" && err == nil, "Like mismatch")
+
+				}
+
+			}
+		} else if index == 1 {
+			id, err := dataItem.GetString("id")
+			assert.True(id == "X998_Y998" && err == nil, "item id mismatch")
+		}
+
+	}
+
+}

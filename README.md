@@ -78,7 +78,6 @@ friends, err := v.GetArray("person", "friends")
 
 ```
 
-
 ### Loop through array
 
 Looping through an array is done with `GetArray()`. It returns an error if the value at that keypath is null (or something else than an array).
@@ -181,12 +180,12 @@ To run the project tests:
 go test
 ```
 
-# Where does the name come from? It's awful.
+## Where does the name come from? It's awful.
 
 Well, I like it! I remebered it from an email one of our projects managers sent a couple of years ago.
 
-> Don't worry. We can handle both XML and Jason
+> "Don't worry. We can handle both XML and Jason"
 
-# Author
+## Author
 
 Anton Holmquist, http://twitter.com/antonholmquist

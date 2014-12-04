@@ -63,18 +63,18 @@ func (v *Value) Marshal() ([]byte, error) {
 func (v *Value) get(key string) (*Value, error) {
 
 	// Assume this is an object
-	obj := v.object()
+	obj, err := v.AsObject()
 
-	// Only continue if it really is an object
-	if obj.valid {
+	if err == nil {
 		child, ok := obj.Map()[key]
 		if ok {
 			return child, nil
+		} else {
+			return nil, errors.New("key not found")
 		}
 	}
 
-	return nil, errors.New("could not get")
-
+	return nil, err
 }
 
 // Private get path
@@ -281,8 +281,9 @@ func (v *Value) AsBoolean() (bool, error) {
 	return false, errors.New("no bool")
 }
 
-// Private object
-func (v *Value) object() *Object {
+// Attempts to typecast the current value into an object.
+// Returns error if the current value is not a json object.
+func (v *Value) AsObject() (*Object, error) {
 
 	var valid bool
 
@@ -293,37 +294,27 @@ func (v *Value) object() *Object {
 		break
 	}
 
-	obj := new(Object)
-	obj.valid = valid
-
-	m := make(map[string]*Value)
-
 	if valid {
+		obj := new(Object)
+		obj.valid = valid
 
-		for key, element := range v.data.(map[string]interface{}) {
-			m[key] = &Value{element, true}
+		m := make(map[string]*Value)
 
+		if valid {
+
+			for key, element := range v.data.(map[string]interface{}) {
+				m[key] = &Value{element, true}
+
+			}
 		}
+
+		obj.data = v.data
+		obj.m = m
+
+		return obj, nil
 	}
 
-	obj.data = v.data
-	obj.m = m
-
-	return obj
-}
-
-// Attempts to typecast the current value into an object.
-// Returns error if the current value is not a json object.
-func (v *Value) AsObject() (*Object, error) {
-	obj := v.object()
-
-	var err error
-
-	if !obj.valid {
-		err = errors.New("Is not an object")
-	}
-
-	return obj, err
+	return nil, errors.New("not an object")
 }
 
 // Attempts to typecast the current value into a string.

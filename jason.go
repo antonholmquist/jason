@@ -174,8 +174,8 @@ func (v *Value) GetArray(keys ...string) ([]*Value, error) {
 	return nil, nil
 }
 
-// Returns true if the instance is actually a JSON null object.
-func (j *Value) IsNull() bool {
+// Returns an error if the value is not actually null
+func (j *Value) AsNull() error {
 	var valid bool
 
 	// Check the type of this data
@@ -185,7 +185,11 @@ func (j *Value) IsNull() bool {
 		break
 	}
 
-	return valid
+	if valid {
+		return nil
+	}
+
+	return errors.New("is not null")
 
 }
 

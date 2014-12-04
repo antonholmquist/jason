@@ -35,7 +35,7 @@ import (
 
 ### Create from string
 
-Create a instance from a string. Returns an error if the string couldn't be parsed.
+Create value from a string. Returns an error if the string couldn't be parsed.
 
 ```go
 v, err := jason.NewValueFromString(s)
@@ -44,7 +44,7 @@ v, err := jason.NewValueFromString(s)
 
 ### Create from a reader (like a http response)
 
-Create a instance from a net/http response. Returns an error if the string couldn't be parsed.
+Create value from a io.reader. Returns an error if the string couldn't be parsed.
 
 ```go
 v, err := jason.NewValueFromReader(res.Body)
@@ -53,9 +53,10 @@ v, err := jason.NewValueFromReader(res.Body)
 
 ### Read values
 
-Reading  values is easy. If the key is invalid, it will return the default value.
+Reading values is easy. If the key is invalid or type doesn't match, it will return the default value and an error.
 
 ```go
+value, err := v.Get("name")
 name, err := v.GetString("name")
 age, err := v.GetNumber("age")
 verified, err := v.GetBoolean("verified")
@@ -66,7 +67,7 @@ friends, err := v.GetArray("friends")
 
 ### Read nested values
 
-Reading nested values is easy. If the path is invalid, it will return the default value, for instance the empty string.
+Reading nested values is easy. If the path is invalid or type doesn't match, it will return the default value and an error.
 
 ```go
 name, err := v.GetString("person", "name")
@@ -80,7 +81,7 @@ friends, err := v.GetArray("person", "friends")
 
 ### Loop through array
 
-Looping through an array is easy. `GetArray()` returns an error if the value at that keypath is null (or something else than an array).
+Looping through an array is done with `GetArray()`. It returns an error if the value at that keypath is null (or something else than an array).
 
 ```go
 
@@ -98,7 +99,7 @@ Looping through an object is easy. `GetObject()` returns an error if the value a
 ```go
 
 person, err := person.GetObject("person")
-for key, value := range person {
+for key, value := range person.Map {
   ...
 }
 ```

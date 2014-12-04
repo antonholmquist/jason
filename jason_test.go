@@ -54,8 +54,10 @@ func TestFirst(t *testing.T) {
     }
   }`
 
-	jValue, err := NewValueFromString(testJSON)
-	j, err := jValue.AsObject()
+	//jValue, err := NewValueFromString(testJSON)
+	//j, err := jValue.AsObject()
+
+	j, err := NewObjectFromString(testJSON)
 
 	a, err := j.GetObject("address")
 	assert.True(a != nil && err == nil, "failed to create json from string")

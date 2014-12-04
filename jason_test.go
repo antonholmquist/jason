@@ -98,9 +98,6 @@ func TestFirst(t *testing.T) {
 
 	s, err = address.Get("street").AsString()
 
-	log.Println("s: ", address)
-	log.Println("err: ", err)
-
 	addressAsString, err := j.Get("address").AsString()
 	assert.True(addressAsString == nil && err != nil, "address should not be an string")
 

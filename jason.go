@@ -13,12 +13,12 @@ type Value struct {
 	exists bool // Used to separate nil and non-existing values
 }
 
-// Object represents an object JSON value.
-// The underlying golang map can be accessed with Map().
-
+// Object represents an object JSON object.
+// It inherets from Value but with an additional method to access
+// a map representation of it's content. It's useful when iterating.
 type Object struct {
 	Value
-	m     map[string]*Value // The formatted map with typed values
+	m     map[string]*Value
 	valid bool
 }
 
@@ -28,9 +28,9 @@ func (j *Object) Map() map[string]*Value {
 	return j.m
 }
 
-// Create a new Value from a io.reader.
+// Creates a new value from an io.reader.
+// Returns an error if the reader does not contain valid json.
 // Useful for parsing the body of a net/http response.
-// Returns an error if something went wrong.
 // Example: NewFromReader(res.Body)
 func NewValueFromReader(reader io.Reader) (*Value, error) {
 	j := new(Value)
@@ -39,22 +39,22 @@ func NewValueFromReader(reader io.Reader) (*Value, error) {
 	return j, err
 }
 
-// Create a new Value from bytes
-// Returns an error if the bytes couldn't be parsed.
+// Creates a new value from bytes.
+// Returns an error if the bytes are not valid json.
 func NewValueFromBytes(b []byte) (*Value, error) {
 	j := new(Value)
 	err := json.Unmarshal(b, &j.data)
 	return j, err
 }
 
-// Create a new Value from a string
-// Returns an error if the string couldn't be parsed.
+// Creates a new value from a string.
+// Returns an error if the string is not valid json.
 func NewValueFromString(s string) (*Value, error) {
 	b := []byte(s)
 	return NewValueFromBytes(b)
 }
 
-// Marshal into bytes
+// Marshal into bytes.
 func (j *Value) Marshal() ([]byte, error) {
 	return json.Marshal(j.data)
 }
@@ -91,13 +91,15 @@ func (j *Value) getPath(keys []string) (*Value, error) {
 	return current, nil
 }
 
-// Get Value at key path. Returns a Value or error.
+// Gets the value at key path.
+// Returns error if the value does not exist.
 // Example: Get("address", "street")
 func (j *Value) Get(keys ...string) (*Value, error) {
 	return j.getPath(keys)
 }
 
-// Get Object at key path. Returns an Object, or error.
+// Gets the value at key path and attempts to typecast the value into an object.
+// Returns error if the value is not a json object.
 func (v *Value) GetObject(keys ...string) (*Object, error) {
 	child, err := v.getPath(keys)
 
@@ -118,22 +120,34 @@ func (v *Value) GetObject(keys ...string) (*Object, error) {
 	return nil, nil
 }
 
-// Get string at key path. Returns a string primitive, or error.
+// Gets the value at key path and attempts to typecast the value into a string.
+// Returns error if the value is not a json string.
 func (v *Value) GetString(keys ...string) (string, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
 		return "", err
 	} else {
-
 		return child.AsString()
-
 	}
 
 	return "", nil
 }
 
-// Get number at key path. Returns a float64, or error.
+// Gets the value at key path and attempts to typecast the value into null.
+// Returns error if the value is not json null.
+func (v *Value) GetNull(keys ...string) error {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return err
+	}
+
+	return child.AsNull()
+}
+
+// Gets the value at key path and attempts to typecast the value into a float64.
+// Returns error if the value is not a json number.
 func (v *Value) GetNumber(keys ...string) (float64, error) {
 	child, err := v.getPath(keys)
 
@@ -148,13 +162,13 @@ func (v *Value) GetNumber(keys ...string) (float64, error) {
 		} else {
 			return n, nil
 		}
-
 	}
 
 	return 0, nil
 }
 
-// Get number at key path. Returns a bool, or error.
+// Gets the value at key path and attempts to typecast the value into a bool.
+// Returns error if the value is not a json boolean.
 func (v *Value) GetBoolean(keys ...string) (bool, error) {
 	child, err := v.getPath(keys)
 
@@ -165,7 +179,8 @@ func (v *Value) GetBoolean(keys ...string) (bool, error) {
 	return child.AsBoolean()
 }
 
-// Get array at key path. Returns an array of Values, or error.
+// Gets the value at key path and attempts to typecast the value into an array.
+// Returns error if the value is not a json array.
 func (v *Value) GetArray(keys ...string) ([]*Value, error) {
 	child, err := v.getPath(keys)
 
@@ -199,8 +214,8 @@ func (j *Value) AsNull() error {
 
 }
 
-// Returns the current Value as an array of Values.
-// Returns an error if the current Value is not an Array.
+// Attempts to typecast the current value into an array.
+// Returns error if the current value is not a json array.
 func (j *Value) AsArray() ([]*Value, error) {
 	var valid bool
 
@@ -228,8 +243,8 @@ func (j *Value) AsArray() ([]*Value, error) {
 
 }
 
-// Returns the current Value as a float64.
-// Returns an error if the current Value is not a json number.
+// Attempts to typecast the current value into a float64.
+// Returns error if the current value is not a json number.
 func (j *Value) AsNumber() (float64, error) {
 	var valid bool
 
@@ -247,8 +262,8 @@ func (j *Value) AsNumber() (float64, error) {
 	return 0, errors.New("not a number")
 }
 
-// Returns the current Value as a bool.
-// Returns an error if the current Value is not a json boolean.
+// Attempts to typecast the current value into a bool.
+// Returns error if the current value is not a json boolean.
 func (j *Value) AsBoolean() (bool, error) {
 	var valid bool
 
@@ -298,8 +313,8 @@ func (j *Value) object() *Object {
 	return obj
 }
 
-// Returns the current data as objects with string keys and Value values.
-// Returns an error if the current Value is not a json object
+// Attempts to typecast the current value into an object.
+// Returns error if the current value is not a json object.
 func (j *Value) AsObject() (*Object, error) {
 	obj := j.object()
 
@@ -312,8 +327,8 @@ func (j *Value) AsObject() (*Object, error) {
 	return obj, err
 }
 
-// Returns the current data as a golang string
-// Returns an error if the current Value is not a json string
+// Attempts to typecast the current value into a string.
+// Returns error if the current value is not a json string
 func (j *Value) AsString() (string, error) {
 	var valid bool
 
@@ -331,8 +346,8 @@ func (j *Value) AsString() (string, error) {
 	return "", errors.New("not a string")
 }
 
-// The method named String() is used by golang's log method for logging
-// It returns the Value as object
+// Returns the value a json formatted string.
+// Note: The method named String() is used by golang's log method for logging.
 func (j *Value) String() string {
 	f, err := json.Marshal(j.data)
 	if err != nil {

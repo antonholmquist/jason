@@ -89,6 +89,7 @@ func objectFromValue(v *Value, err error) (*Object, error) {
 	return v.AsObject()
 }
 
+/*
 // Create a new instance from a string
 // Returns an error if the string couldn't be parsed.
 func NewObjectFromString(s string) (*Object, error) {
@@ -103,7 +104,7 @@ func NewObjectFromBytes(b []byte) (*Object, error) {
 
 func NewObjectFromReader(reader io.Reader) (*Object, error) {
 	return objectFromValue(NewValueFromReader(reader))
-}
+}*/
 
 // Returns true if this key exists
 // Example: j.Get("address").Exists()

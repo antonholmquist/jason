@@ -64,12 +64,6 @@ func TestFirst(t *testing.T) {
 	s, err := j.GetString("name")
 
 	assert.True(s == "anton" && err == nil, "name should be a string")
-	//assert.True(j.Get("name").IsObject() == false, "name should not be an object")
-
-	assert.True(j.object().Valid, "the object should be valid")
-
-	//assert.True(j.Has("name") == true, "has name")
-	//assert.True(j.Has("name2") == false, "do not have name2")
 
 	s, err = j.GetString("name")
 	assert.True(s == "anton" && err == nil, "name shoud match")

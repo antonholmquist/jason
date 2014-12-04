@@ -19,7 +19,7 @@ type Value struct {
 type Object struct {
 	Value
 	Map   map[string]*Value // The formatted map with typed values
-	Valid bool
+	valid bool
 }
 
 // Create a new Value from a io.reader.
@@ -60,7 +60,7 @@ func (j *Value) get(key string) (*Value, error) {
 	obj := j.object()
 
 	// Only continue if it really is an object
-	if obj.Valid {
+	if obj.valid {
 		child, ok := obj.Map[key]
 		if ok {
 			return child, nil
@@ -269,7 +269,7 @@ func (j *Value) object() *Object {
 	}
 
 	obj := new(Object)
-	obj.Valid = valid
+	obj.valid = valid
 
 	m := make(map[string]*Value)
 
@@ -295,7 +295,7 @@ func (j *Value) AsObject() (*Object, error) {
 
 	var err error
 
-	if !obj.Valid {
+	if !obj.valid {
 		err = errors.New("Is not an object")
 	}
 

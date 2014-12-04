@@ -53,10 +53,9 @@ v, err := jason.NewValueFromReader(res.Body)
 
 ### Read values
 
-Reading values is easy. If the key is invalid or type doesn't match, it will return the default value and an error.
+Reading values is easy. If the key path is invalid or type doesn't match, it will return an error and the default value.
 
 ```go
-value, err := v.Get("name")
 name, err := v.GetString("name")
 age, err := v.GetNumber("age")
 verified, err := v.GetBoolean("verified")
@@ -103,7 +102,7 @@ for key, value := range person.Map() {
 
 ## Sample App
 
-Example project demonstrating how to parse a string.
+Example project:
 
 ```go
 package main
@@ -134,17 +133,17 @@ func main() {
 
   // Read base content
   name, _ := v.GetString("name")
-  age, _ := v.GetNumber("name")
+  age, _ := v.GetNumber("age")
   occupation, _ := v.GetString("other", "occupation")
   years, _ := v.GetNumber("other", "years")
 
-  // Log base content
+  // Log content
   log.Println("age:", age)
   log.Println("name:", name)
   log.Println("occupation:", occupation)
   log.Println("years:", years)
 
-  // Loop through children array
+  // Loop through child array
   children, _ := v.GetArray("children")
   for i, child := range children {
     log.Printf("child %d: %s", i, child.String())
@@ -152,7 +151,7 @@ func main() {
 
   // Loop through others object
   others, _ := v.GetObject("other")
-  for _, value := range others.Map {
+  for _, value := range others.Map() {
 
     s, sErr := value.AsString()
     n, nErr := value.AsNumber()

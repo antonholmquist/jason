@@ -14,12 +14,18 @@ type Value struct {
 }
 
 // Object represents an object JSON value.
-// The underlying golang map can be accessed with Map.
-// It is needed when iterating through the values of the object.
+// The underlying golang map can be accessed with Map().
+
 type Object struct {
 	Value
-	Map   map[string]*Value // The formatted map with typed values
+	m     map[string]*Value // The formatted map with typed values
 	valid bool
+}
+
+// Returns the golang map.
+// Needed when iterating through the values of the object.
+func (j *Object) Map() map[string]*Value {
+	return j.m
 }
 
 // Create a new Value from a io.reader.
@@ -61,7 +67,7 @@ func (j *Value) get(key string) (*Value, error) {
 
 	// Only continue if it really is an object
 	if obj.valid {
-		child, ok := obj.Map[key]
+		child, ok := obj.Map()[key]
 		if ok {
 			return child, nil
 		}
@@ -287,7 +293,7 @@ func (j *Value) object() *Object {
 	}
 
 	obj.data = j.data
-	obj.Map = m
+	obj.m = m
 
 	return obj
 }

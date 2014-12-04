@@ -130,7 +130,7 @@ func TestFirst(t *testing.T) {
 
 	obj, err := j.GetObject("country")
 	assert.True(obj != nil && err == nil, "country should not return error on AsObject")
-	for key, value := range obj.Map {
+	for key, value := range obj.Map() {
 
 		assert.True(key == "name", "country name key incorrect")
 

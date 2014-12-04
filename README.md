@@ -84,7 +84,6 @@ friends, err := v.GetArray("person", "friends")
 Looping through an array is done with `GetArray()`. It returns an error if the value at that keypath is null (or something else than an array).
 
 ```go
-
 friends, err := person.GetArray("friends")
 for _, friend := range friends {
   name, err := friend.GetString("name")
@@ -97,13 +96,11 @@ for _, friend := range friends {
 Looping through an object is easy. `GetObject()` returns an error if the value at that keypath is null (or something else than an object).
 
 ```go
-
 person, err := person.GetObject("person")
-for key, value := range person.Map {
+for key, value := range person.Map() {
   ...
 }
 ```
-
 
 ## Sample App
 

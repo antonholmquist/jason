@@ -18,21 +18,8 @@ type Array struct {
 	Valid bool
 }
 
-// Private bool
-type Boolean struct {
-	Value
-	b     bool
-	Valid bool
-}
-
 type Null struct {
 	Value
-	Valid bool
-}
-
-type Number struct {
-	Value
-	f     float64
 	Valid bool
 }
 
@@ -290,8 +277,7 @@ func (j *Value) AsArray() ([]*Value, error) {
 	return a.slice, err
 }
 
-func (j *Value) number() (*Number, error) {
-
+func (j *Value) AsNumber() (float64, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -302,24 +288,10 @@ func (j *Value) number() (*Number, error) {
 	}
 
 	if valid {
-		n := new(Number)
-		n.Valid = valid
-		n.f = j.data.(float64)
-		n.data = j.data
-		return n, nil
+		return j.data.(float64), nil
 	}
 
-	return nil, errors.New("not a number")
-}
-
-func (j *Value) AsNumber() (float64, error) {
-	n, err := j.number()
-
-	if err != nil {
-		return 0, err
-	}
-
-	return n.f, nil
+	return 0, errors.New("not a number")
 }
 
 // Returns true if the instance is actually a JSON bool.

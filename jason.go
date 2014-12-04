@@ -13,7 +13,9 @@ type Value struct {
 	exists bool // Used to separate nil and non-existing values
 }
 
-// Value represents an object JSON value.
+// Object represents an object JSON value.
+// The underlying golang map can be accessed with Map.
+// It is needed when iterating through the values of the object.
 type Object struct {
 	Value
 	Map   map[string]*Value // The formatted map with typed values

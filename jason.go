@@ -150,14 +150,14 @@ func (j *Value) getPath(keys []string) (*Value, error) {
 
 // Get key or key path. Returns a new Value instance.
 // Example: Get("address", "street")
-func (j *Object) Get(keys ...string) (*Value, error) {
+func (j *Value) Get(keys ...string) (*Value, error) {
 	return j.getPath(keys)
 }
 
 // Get Object at the path, and return error if it's not
 // Can be useful in some cases
 
-func (v *Object) GetObject(keys ...string) (*Object, error) {
+func (v *Value) GetObject(keys ...string) (*Object, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -177,7 +177,7 @@ func (v *Object) GetObject(keys ...string) (*Object, error) {
 	return nil, nil
 }
 
-func (v *Object) GetString(keys ...string) (*String, error) {
+func (v *Value) GetString(keys ...string) (*String, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -197,7 +197,7 @@ func (v *Object) GetString(keys ...string) (*String, error) {
 	return nil, nil
 }
 
-func (v *Object) GetNumber(keys ...string) (*Number, error) {
+func (v *Value) GetNumber(keys ...string) (*Number, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -217,7 +217,7 @@ func (v *Object) GetNumber(keys ...string) (*Number, error) {
 	return nil, nil
 }
 
-func (v *Object) GetBoolean(keys ...string) (*Boolean, error) {
+func (v *Value) GetBoolean(keys ...string) (*Boolean, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -237,7 +237,7 @@ func (v *Object) GetBoolean(keys ...string) (*Boolean, error) {
 	return nil, nil
 }
 
-func (v *Object) GetArray(keys ...string) (*Array, error) {
+func (v *Value) GetArray(keys ...string) (*Array, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {

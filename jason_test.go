@@ -110,13 +110,13 @@ func TestFirst(t *testing.T) {
 	assert.True(s == "" && err != nil, "nonexistent string fail")
 
 	b, err := j.GetBoolean("true")
-	assert.True(b.Boolean() == true && err == nil, "bool true test")
+	assert.True(b == true && err == nil, "bool true test")
 
 	b, err = j.GetBoolean("false")
-	assert.True(b.Boolean() == false && err == nil, "bool false test")
+	assert.True(b == false && err == nil, "bool false test")
 
 	b, err = j.GetBoolean("invalid_field")
-	assert.True(b == nil && err != nil, "bool invalid test")
+	assert.True(b == false && err != nil, "bool invalid test")
 
 	list, err := j.GetArray("list")
 	assert.True(list != nil && err == nil, "list should be an array")

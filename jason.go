@@ -217,24 +217,14 @@ func (v *Value) GetNumber(keys ...string) (float64, error) {
 	return 0, nil
 }
 
-func (v *Value) GetBoolean(keys ...string) (*Boolean, error) {
+func (v *Value) GetBoolean(keys ...string) (bool, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
-		return nil, err
-	} else {
-
-		obj, err := child.AsBoolean()
-
-		if err != nil {
-			return nil, err
-		} else {
-			return obj, nil
-		}
-
+		return false, err
 	}
 
-	return nil, nil
+	return child.AsBoolean()
 }
 
 func (v *Value) GetArray(keys ...string) ([]*Value, error) {
@@ -362,9 +352,8 @@ func (j *Value) AsNumber() (float64, error) {
 	return n.f, nil
 }
 
-// Private
-func (j *Value) boolean() (*Boolean, error) {
-
+// Returns true if the instance is actually a JSON bool.
+func (j *Value) AsBoolean() (bool, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -375,30 +364,10 @@ func (j *Value) boolean() (*Boolean, error) {
 	}
 
 	if valid {
-		b := new(Boolean)
-		b.Valid = valid
-		b.data = j.data
-		b.b = j.data.(bool)
-		return b, nil
+		return j.data.(bool), nil
 	}
 
-	return nil, errors.New("no bool")
-}
-
-// Returns the Number() converted to an int64
-func (j *Boolean) Boolean() bool {
-	b, _ := j.boolean()
-	return b.b
-}
-
-// Returns true if the instance is actually a JSON bool.
-func (j *Value) AsBoolean() (*Boolean, error) {
-	return j.boolean()
-}
-
-func (v *Value) IsBoolean() bool {
-	_, err := v.boolean()
-	return err == nil
+	return false, errors.New("no bool")
 }
 
 // Private object

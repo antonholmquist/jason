@@ -2,20 +2,9 @@
 
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 
-Jason is an easy-to-use JSON library for Go. It's designed to be convenient for reading arbitrary JSON and to be forgiving to inconsistent content. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
+Jason is an easy-to-use JSON library for Go. It's designed to be convenient for reading arbitrary JSON while still honoring the strictness of the language. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
 
 **Note: The API will be subject to change during 2014 if there are very good reasons to do so. On January 1st 2015 it will be frozen.**
-
-## Data types
-
-The following golang values are used for the JSON data types. It is consistent with how `encoding/json` uses primitive types.
-
-- `bool`, for JSON booleans
-- `float64`, for JSON numbers
-- `string`, for JSON strings
-- `[]*Jason`, for JSON arrays
-- `map[string]*Jason`, for JSON objects
-- `nil` for JSON null
 
 ## Install
 
@@ -30,6 +19,17 @@ import (
   "github.com/antonholmquist/jason"
 )
 ```
+
+## Data types
+
+The following golang values are used to represent JSON data types. It is consistent with how `encoding/json` uses primitive types.
+
+- `bool`, for JSON booleans
+- `float64`, for JSON numbers
+- `string`, for JSON strings
+- `[]*Value`, for JSON arrays
+- `map[string]*Value`, for JSON objects
+- `nil` for JSON null
 
 ## Examples
 
@@ -174,10 +174,19 @@ Documentation can be found a godoc:
 
 https://godoc.org/github.com/antonholmquist/jason
 
-
 ## Test
 To run the project tests:
 
 ```shell
 go test
 ```
+
+# Where does the name come from? It's awful.
+
+Well, I like it! I remebered it from an email one of our projects managers sent a couple of years ago.
+
+> Don't worry. We can handle both XML and Jason
+
+# Author
+
+Anton Holmquist, http://twitter.com/antonholmquist

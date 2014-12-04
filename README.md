@@ -150,30 +150,25 @@ func main() {
 
   // Loop through children array
   children, _ := v.GetArray("children")
-  for i, child := range children.Slice {
+  for i, child := range children {
     log.Printf("child %d: %s", i, child.String())
   }
 
   // Loop through others object
   others, _ := v.GetObject("other")
-  for _, value := range others.Map() {
+  for _, value := range others.Map {
 
     s, sErr := value.AsString()
     n, nErr := value.AsNumber()
 
     // If it's a string, print it
     if sErr == nil {
-      log.Println("string value: ", s.String())
-    } 
-
-    // If it's a number, print it
-    else if nErr == nil {
-      log.Println("number value: ", n.Float64())
+      log.Println("string value: ", s)
+    } else if nErr == nil {
+      log.Println("number value: ", n)
     }
   }
 }
-
-
 ```
 
 ## Documentation

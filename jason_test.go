@@ -106,36 +106,33 @@ func TestFirst(t *testing.T) {
 	s, err = j.GetString("address", "name2")
 	assert.True(s == nil && err != nil, "nonexistent string fail")
 
-	assert.True(j.Get("address", "street").Exists() == true, "street shoud exist")
-	assert.True(j.Get("address", "street2").Exists() == false, "street should not exist")
-
-	b, err := j.Get("true").AsBoolean()
+	b, err := j.GetBoolean("true")
 	assert.True(b.Boolean() == true && err == nil, "bool true test")
 
-	b, err = j.Get("false").AsBoolean()
+	b, err = j.GetBoolean("false")
 	assert.True(b.Boolean() == false && err == nil, "bool false test")
 
-	b, err = j.Get("invalid_field").AsBoolean()
+	b, err = j.GetBoolean("invalid_field")
 	assert.True(b == nil && err != nil, "bool invalid test")
 
-	list, err := j.Get("list").AsArray()
+	list, err := j.GetArray("list")
 	assert.True(list != nil && err == nil, "list should be an array")
 
-	list2, err := j.Get("list2").AsArray()
+	list2, err := j.GetArray("list2")
 	assert.True(list2 != nil && err == nil, "list2 should be an array")
 
-	list2Array, err := j.Get("list2").AsArray()
+	list2Array, err := j.GetArray("list2")
 	assert.True(err == nil, "List2 should not return error on AsArray")
 	assert.True(len(list2Array.Slice()) == 2, "List2 should should have length 2")
 
 	for _, element := range list2Array.Slice() {
 		//assert.True(element.IsObject() == true, "first fail")
 
-		s, err = element.Get("street").AsString()
+		s, err = element.GetString("street")
 		assert.True(s.String() == "Street 42" && err == nil, "second fail")
 	}
 
-	obj, err := j.Get("country").AsObject()
+	obj, err := j.GetObject("country")
 	assert.True(obj != nil && err == nil, "country should not return error on AsObject")
 	for key, value := range obj.Map() {
 

@@ -113,8 +113,9 @@ func (j *Value) get(key string) (*Value, error) {
 // Private to get path
 func (j *Value) getPath(keys []string) (*Value, error) {
 	current := j
+	var err error
 	for _, key := range keys {
-		current, err := current.get(key)
+		current, err = current.get(key)
 
 		if err != nil {
 			return nil, err
@@ -180,6 +181,46 @@ func (v *Value) GetNumber(keys ...string) (*Number, error) {
 	} else {
 
 		obj, err := child.AsNumber()
+
+		if err != nil {
+			return nil, err
+		} else {
+			return obj, nil
+		}
+
+	}
+
+	return nil, nil
+}
+
+func (v *Value) GetBoolean(keys ...string) (*Boolean, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		obj, err := child.AsBoolean()
+
+		if err != nil {
+			return nil, err
+		} else {
+			return obj, nil
+		}
+
+	}
+
+	return nil, nil
+}
+
+func (v *Value) GetArray(keys ...string) (*Array, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		obj, err := child.AsArray()
 
 		if err != nil {
 			return nil, err

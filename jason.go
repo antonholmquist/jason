@@ -81,37 +81,6 @@ func NewValueFromString(s string) (*Value, error) {
 	return NewValueFromBytes(b)
 }
 
-func objectFromValue(v *Value, err error) (*Object, error) {
-	if err != nil {
-		return nil, err
-	}
-
-	return v.AsObject()
-}
-
-/*
-// Create a new instance from a string
-// Returns an error if the string couldn't be parsed.
-func NewObjectFromString(s string) (*Object, error) {
-	return objectFromValue(NewValueFromString(s))
-}
-
-// Create a new instance from a string
-// Returns an error if the string couldn't be parsed.
-func NewObjectFromBytes(b []byte) (*Object, error) {
-	return objectFromValue(NewValueFromBytes(b))
-}
-
-func NewObjectFromReader(reader io.Reader) (*Object, error) {
-	return objectFromValue(NewValueFromReader(reader))
-}*/
-
-// Returns true if this key exists
-// Example: j.Get("address").Exists()
-func (j *Value) Exists() bool {
-	return j.exists
-}
-
 // Marshal into bytes
 func (j *Value) Marshal() ([]byte, error) {
 	return json.Marshal(j.data)

@@ -54,7 +54,8 @@ func TestFirst(t *testing.T) {
     }
   }`
 
-	j, err := NewValueFromString(testJSON)
+	jValue, err := NewValueFromString(testJSON)
+	j, err := jValue.AsObject()
 
 	a, err := j.GetObject("address")
 	assert.True(a != nil && err == nil, "failed to create json from string")
@@ -125,8 +126,10 @@ func TestFirst(t *testing.T) {
 	assert.True(err == nil, "List2 should not return error on AsArray")
 	assert.True(len(list2Array.Slice()) == 2, "List2 should should have length 2")
 
-	for _, element := range list2Array.Slice() {
+	for _, elementValue := range list2Array.Slice() {
 		//assert.True(element.IsObject() == true, "first fail")
+
+		element, err := elementValue.AsObject()
 
 		s, err = element.GetString("street")
 		assert.True(s.String() == "Street 42" && err == nil, "second fail")

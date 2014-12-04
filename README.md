@@ -56,11 +56,11 @@ v, err := jason.NewValueFromReader(res.Body)
 Reading  values is easy. If the key is invalid, it will return the default value.
 
 ```go
-name, err := v.Get("name").AsString()
-age, err := v.Get("age").AsNumber()
-verified, err := v.Get("verified").AsBoolean()
-education, err := v.Get("education").AsObject()
-friends, err := v.Get("friends").AsArray()
+name, err := v.GetString("name")
+age, err := v.GetNumber("age")
+verified, err := v.GetBoolean("verified")
+education, err := v.GetObject("education")
+friends, err := v.GetArray("friends")
 
 ```
 
@@ -69,42 +69,35 @@ friends, err := v.Get("friends").AsArray()
 Reading nested values is easy. If the path is invalid, it will return the default value, for instance the empty string.
 
 ```go
-name, err := v.Get("person", "name").AsString()
-age, err := v.Get("person", "age").AsNumber()
-verified, err := v.Get("person", "verified").AsBoolean()
-education, err := v.Get("person", "education").AsObject()
-friends, err := v.Get("person", "friends").AsArray()
+name, err := v.GetString("person", "name")
+age, err := v.GetNumber("person", "age")
+verified, err := v.GetBoolean("person", "verified")
+education, err := v.GetObject("person", "education")
+friends, err := v.GetArray("person", "friends")
 
 ```
 
-### Check if values exists
-
-To check if a value exist, use `Exists()`.
-
-```go
-v.Get("person", "name").Exists()
-```
 
 ### Loop through array
 
-Looping through an array is easy and will never return an exeption. `AsArray()` returns an empty slice if the value at that keypath is null (or something else than an array).
+Looping through an array is easy. `GetArray()` returns an error if the value at that keypath is null (or something else than an array).
 
 ```go
 
-friends, err := person.Get("friends").AsArray()
+friends, err := person.GetArray("friends")
 for _, friend := range friends {
-  name, err := friend.Get("name").AsString()
-  age, err := friend.Get("age").AsNumber()
+  name, err := friend.GetString("name")
+  age, err := friend.GetNumber("age")
 }
 ```
 
 ### Loop through object
 
-Looping through an object is easy and will never return an exeption. `AsObject()` returns an empty map if the value at that keypath is null (or something else than an object).
+Looping through an object is easy. `GetObject()` returns an error if the value at that keypath is null (or something else than an object).
 
 ```go
 
-person, err := person.Get("person").AsObject()
+person, err := person.GetObject("person")
 for key, value := range person {
   ...
 }
@@ -143,10 +136,10 @@ func main() {
   v, _ := jason.NewValueFromString(exampleJSON)
 
   // Read base content
-  name, _ := v.Get("name").AsString()
-  age, _ := v.Get("name").AsNumber()
-  occupation, _ := v.Get("other", "occupation").AsString()
-  years, _ := v.Get("other", "years").AsNumber()
+  name, _ := v.GetString("name")
+  age, _ := v.GetNumber("name")
+  occupation, _ := v.GetString("other", "occupation")
+  years, _ := v.GetNumber("other", "years")
 
   // Log base content
   log.Println("age:", age)
@@ -155,26 +148,26 @@ func main() {
   log.Println("years:", years)
 
   // Loop through children array
-  children, _ := v.Get("children").AsArray()
-  for i, child := range children {
+  children, _ := v.GetArray("children")
+  for i, child := range children.Slice {
     log.Printf("child %d: %s", i, child.String())
   }
 
   // Loop through others object
-  others, _ := v.Get("other").AsObject()
-  for _, value := range others {
+  others, _ := v.GetObject("other")
+  for _, value := range others.Map() {
 
     s, sErr := value.AsString()
     n, nErr := value.AsNumber()
 
     // If it's a string, print it
     if sErr == nil {
-      log.Println("string value: ", s)
+      log.Println("string value: ", s.String())
     } 
 
     // If it's a number, print it
     else if nErr == nil {
-      log.Println("number value: ", n)
+      log.Println("number value: ", n.Float64())
     }
   }
 }

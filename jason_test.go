@@ -187,15 +187,15 @@ func TestSecond(t *testing.T) {
   }`
 
 	assert := NewAssert(t)
-	j, err := NewValueFromString(json)
+	j, err := NewObjectFromString(json)
 
 	assert.True(j != nil && err == nil, "failed to parse json")
 
 	dataObject, err := j.GetObject("data")
 	assert.True(dataObject == nil && err != nil, "data should not be an object")
 
-	dataArray, err := j.GetArray("data")
-	assert.True(dataArray != nil && err == nil, "data should not be an object")
+	dataArray, err := j.GetObjectArray("data")
+	assert.True(dataArray != nil && err == nil, "data should be an object array")
 
 	for index, dataItem := range dataArray {
 
@@ -206,7 +206,7 @@ func TestSecond(t *testing.T) {
 			fromName, err := dataItem.GetString("from", "name")
 			assert.True(fromName == "Tom Brady" && err == nil, "fromName mismatch")
 
-			actions, err := dataItem.GetArray("actions")
+			actions, err := dataItem.GetObjectArray("actions")
 
 			for index, action := range actions {
 

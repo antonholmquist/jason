@@ -128,7 +128,7 @@ func (v *Object) Get(keys ...string) (*Value, error) {
 
 // Gets the value at key path and attempts to typecast the value into an object.
 // Returns error if the value is not a json object.
-func (v *Value) GetObject(keys ...string) (*Object, error) {
+func (v *Object) GetObject(keys ...string) (*Object, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -150,7 +150,7 @@ func (v *Value) GetObject(keys ...string) (*Object, error) {
 
 // Gets the value at key path and attempts to typecast the value into a string.
 // Returns error if the value is not a json string.
-func (v *Value) GetString(keys ...string) (string, error) {
+func (v *Object) GetString(keys ...string) (string, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -164,7 +164,7 @@ func (v *Value) GetString(keys ...string) (string, error) {
 
 // Gets the value at key path and attempts to typecast the value into null.
 // Returns error if the value is not json null.
-func (v *Value) GetNull(keys ...string) error {
+func (v *Object) GetNull(keys ...string) error {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -176,7 +176,7 @@ func (v *Value) GetNull(keys ...string) error {
 
 // Gets the value at key path and attempts to typecast the value into a float64.
 // Returns error if the value is not a json number.
-func (v *Value) GetNumber(keys ...string) (float64, error) {
+func (v *Object) GetNumber(keys ...string) (float64, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -197,7 +197,7 @@ func (v *Value) GetNumber(keys ...string) (float64, error) {
 
 // Gets the value at key path and attempts to typecast the value into a bool.
 // Returns error if the value is not a json boolean.
-func (v *Value) GetBoolean(keys ...string) (bool, error) {
+func (v *Object) GetBoolean(keys ...string) (bool, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -209,7 +209,7 @@ func (v *Value) GetBoolean(keys ...string) (bool, error) {
 
 // Gets the value at key path and attempts to typecast the value into an array.
 // Returns error if the value is not a json array.
-func (v *Value) GetArray(keys ...string) ([]*Value, error) {
+func (v *Object) GetArray(keys ...string) ([]*Value, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -218,6 +218,40 @@ func (v *Value) GetArray(keys ...string) ([]*Value, error) {
 
 		return child.AsArray()
 
+	}
+
+	return nil, nil
+}
+
+// Gets the value at key path and attempts to typecast the value into an array of objects.
+// Returns error if the value is not a json array or if any of the contained objects are not objects.
+func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		array, err := child.AsArray()
+
+		if err != nil {
+			return nil, err
+		} else {
+
+			typedArray := make([]*Object, len(array))
+
+			for index, arrayItem := range array {
+				typedArrayItem, err := arrayItem.AsObject()
+
+				if err != nil {
+					return nil, err
+				} else {
+					typedArray[index] = typedArrayItem
+				}
+
+			}
+			return typedArray, nil
+		}
 	}
 
 	return nil, nil

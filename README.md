@@ -72,7 +72,8 @@ name, err := v.GetString("name")
 age, err := v.GetNumber("age")
 verified, err := v.GetBoolean("verified")
 education, err := v.GetObject("education")
-friends, err := v.GetArray("friends")
+friends, err := v.GetObjectArray("friends")
+interests, err := v.GetStringArray("interests")
 
 ```
 

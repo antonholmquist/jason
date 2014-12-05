@@ -24,7 +24,6 @@
 //		verified, err := v.GetBoolean("verified")
 //		education, err := v.GetObject("education")
 //		friends, err := v.GetArray("friends")
-
 package jason
 
 import (

@@ -35,7 +35,7 @@
 //			age, err := friend.GetNumber("age")
 //		}
 //
-// Loop through keys of object.
+// Loop through keys of object
 //
 // Looping through an object is done by first getting it with `GetObject()` and then range on the Map().
 // The GetObject() method returns an error if the value at that keypath is null (or something else than an object).

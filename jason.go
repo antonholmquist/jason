@@ -9,7 +9,7 @@
 //
 // JSON is a commonly used data transfer format, so usually the data you want to read comes either as bytes or as an io.Reader.
 //
-// Create an object as from bytes:
+// Create an object from bytes:
 //		v, err := jason.NewObjectFromBytes(b)
 // .. or from a net/http response body:
 //		v, err := jason.NewObjectFromReader(res.body)
@@ -29,14 +29,16 @@
 //
 // Getting an array is done by Get<Type>Array() or the generic GetArray(). It returns an error if the value at that keypath is null (or something else than the type).
 //
-// 		friends, err := person.GetObjectArray("friends")
-// 		for _, friend := range friends {
-// 		name, err := friend.GetString("name")
-//		age, err := friend.GetNumber("age")
+//		friends, err := person.GetObjectArray("friends")
+//		for _, friend := range friends {
+//			name, err := friend.GetString("name")
+//			age, err := friend.GetNumber("age")
+//		}
 //
-// Loop through object
+// Loop through keys of object.
 //
-// Looping through an object is easy. `GetObject()` returns an error if the value at that keypath is null (or something else than an object).
+// Looping through an object is done by first getting it with `GetObject()` and then range on the Map().
+// The GetObject() method returns an error if the value at that keypath is null (or something else than an object).
 //
 //		person, err := person.GetObject("person")
 //		for key, value := range person.Map() {

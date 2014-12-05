@@ -121,9 +121,9 @@ import (
 
 func main() {
 
-  // Create example json
   exampleJSON := `{
     "name": "Walter White",
+
     "age": 51,
     "children": [
       "junior",
@@ -135,35 +135,30 @@ func main() {
     }
   }`
 
-  // Get root value from string
-  v, _ := jason.NewValueFromString(exampleJSON)
+  v, _ := jason.NewObjectFromString(exampleJSON)
 
-  // Read base content
   name, _ := v.GetString("name")
   age, _ := v.GetNumber("age")
   occupation, _ := v.GetString("other", "occupation")
   years, _ := v.GetNumber("other", "years")
 
-  // Log content
   log.Println("age:", age)
   log.Println("name:", name)
   log.Println("occupation:", occupation)
   log.Println("years:", years)
 
-  // Loop through child array
-  children, _ := v.GetArray("children")
+  children, _ := v.GetStringArray("children")
   for i, child := range children {
-    log.Printf("child %d: %s", i, child.String())
+    log.Printf("child %d: %s", i, child)
   }
 
-  // Loop through others object
   others, _ := v.GetObject("other")
+
   for _, value := range others.Map() {
 
     s, sErr := value.AsString()
     n, nErr := value.AsNumber()
 
-    // If it's a string, print it
     if sErr == nil {
       log.Println("string value: ", s)
     } else if nErr == nil {
@@ -171,6 +166,7 @@ func main() {
     }
   }
 }
+
 ```
 
 ## Documentation

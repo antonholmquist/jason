@@ -257,6 +257,105 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 	return nil, nil
 }
 
+// Gets the value at key path and attempts to typecast the value into an array of string.
+// Returns error if the value is not a json array or if any of the contained objects are not strings.
+func (v *Object) GetStringArray(keys ...string) ([]string, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		array, err := child.AsArray()
+
+		if err != nil {
+			return nil, err
+		} else {
+
+			typedArray := make([]string, len(array))
+
+			for index, arrayItem := range array {
+				typedArrayItem, err := arrayItem.AsString()
+
+				if err != nil {
+					return nil, err
+				} else {
+					typedArray[index] = typedArrayItem
+				}
+
+			}
+			return typedArray, nil
+		}
+	}
+	return nil, nil
+}
+
+// Gets the value at key path and attempts to typecast the value into an array of floats.
+// Returns error if the value is not a json array or if any of the contained objects are not numbers.
+func (v *Object) GetNumberArray(keys ...string) ([]float64, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		array, err := child.AsArray()
+
+		if err != nil {
+			return nil, err
+		} else {
+
+			typedArray := make([]float64, len(array))
+
+			for index, arrayItem := range array {
+				typedArrayItem, err := arrayItem.AsNumber()
+
+				if err != nil {
+					return nil, err
+				} else {
+					typedArray[index] = typedArrayItem
+				}
+
+			}
+			return typedArray, nil
+		}
+	}
+	return nil, nil
+}
+
+// Gets the value at key path and attempts to typecast the value into an array of bools.
+// Returns error if the value is not a json array or if any of the contained objects are not booleans.
+func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		array, err := child.AsArray()
+
+		if err != nil {
+			return nil, err
+		} else {
+
+			typedArray := make([]bool, len(array))
+
+			for index, arrayItem := range array {
+				typedArrayItem, err := arrayItem.AsBoolean()
+
+				if err != nil {
+					return nil, err
+				} else {
+					typedArray[index] = typedArrayItem
+				}
+
+			}
+			return typedArray, nil
+		}
+	}
+	return nil, nil
+}
+
 // Returns an error if the value is not actually null
 func (v *Value) AsNull() error {
 	var valid bool

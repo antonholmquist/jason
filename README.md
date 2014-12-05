@@ -1,5 +1,5 @@
 
-![logo](https://us-bucket-host.s3.amazonaws.com/jason/jason_cropped_2.svg)
+![logo](https://us-bucket-host.s3.amazonaws.com/jason/jason_cropped_3.svg)
 
 # Jason - JSON Library for Go
 

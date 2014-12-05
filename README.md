@@ -1,7 +1,7 @@
 
-![logo](https://us-bucket-host.s3.amazonaws.com/jason/jason_cropped_3.svg)
+![logo](https://us-bucket-host.s3.amazonaws.com/jason/jason_cropped_4.svg)
 
-# Jason - JSON Library for Go
+# JSON Library for Go
 
 [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 

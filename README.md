@@ -35,7 +35,14 @@ The following golang values are used to represent JSON data types. It is consist
 
 ### Create from string
 
-Create value from a string. Returns an error if the string couldn't be parsed.
+Create object from a string. Returns an error if the string couldn't be parsed.
+
+```go
+v, err := jason.NewObjectFromString(s)
+
+```
+
+If the root object is not an array, use this method instead. It can then be cased to the expected type with one of the As-Methods.
 
 ```go
 v, err := jason.NewValueFromString(s)
@@ -47,7 +54,7 @@ v, err := jason.NewValueFromString(s)
 Create value from a io.reader. Returns an error if the string couldn't be parsed.
 
 ```go
-v, err := jason.NewValueFromReader(res.Body)
+v, err := jason.NewObjectFromReader(res.Body)
 
 ```
 

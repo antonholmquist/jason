@@ -50,17 +50,15 @@ func NewValueFromBytes(b []byte) (*Value, error) {
 func objectFromValue(v *Value, err error) (*Object, error) {
 	if err != nil {
 		return nil, err
-	} else {
-
-		o, err := v.AsObject()
-
-		if err != nil {
-			return nil, err
-		} else {
-			return o, nil
-		}
-
 	}
+
+	o, err := v.AsObject()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return o, nil
 }
 
 func NewObjectFromBytes(b []byte) (*Object, error) {
@@ -526,7 +524,7 @@ func (v *Value) String() string {
 	f, err := json.Marshal(v.data)
 	if err != nil {
 		return err.Error()
-	} else {
-		return string(f)
 	}
+
+	return string(f)
 }

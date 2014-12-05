@@ -54,6 +54,34 @@ func NewValueFromString(s string) (*Value, error) {
 	return NewValueFromBytes(b)
 }
 
+func objectFromValue(v *Value, err error) (*Object, error) {
+	if err != nil {
+		return nil, err
+	} else {
+
+		o, err := v.AsObject()
+
+		if err != nil {
+			return nil, err
+		} else {
+			return o, nil
+		}
+
+	}
+}
+
+func NewObjectFromString(s string) (*Object, error) {
+	return objectFromValue(NewValueFromString(s))
+}
+
+func NewObjectFromBytes(b []byte) (*Object, error) {
+	return objectFromValue(NewValueFromBytes(b))
+}
+
+func NewObjectFromReader(reader io.Reader) (*Object, error) {
+	return objectFromValue(NewValueFromReader(reader))
+}
+
 // Marshal into bytes.
 func (v *Value) Marshal() ([]byte, error) {
 	return json.Marshal(v.data)
@@ -94,7 +122,7 @@ func (v *Value) getPath(keys []string) (*Value, error) {
 // Gets the value at key path.
 // Returns error if the value does not exist.
 // Example: Get("address", "street")
-func (v *Value) Get(keys ...string) (*Value, error) {
+func (v *Object) Get(keys ...string) (*Value, error) {
 	return v.getPath(keys)
 }
 

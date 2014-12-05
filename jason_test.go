@@ -54,7 +54,7 @@ func TestFirst(t *testing.T) {
     }
   }`
 
-	j, err := NewObjectFromString(testJSON)
+	j, err := NewObjectFromBytes([]byte(testJSON))
 
 	a, err := j.GetObject("address")
 	assert.True(a != nil && err == nil, "failed to create json from string")
@@ -187,7 +187,7 @@ func TestSecond(t *testing.T) {
   }`
 
 	assert := NewAssert(t)
-	j, err := NewObjectFromString(json)
+	j, err := NewObjectFromBytes([]byte(json))
 
 	assert.True(j != nil && err == nil, "failed to parse json")
 

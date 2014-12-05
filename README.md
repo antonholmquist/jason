@@ -33,19 +33,19 @@ The following golang values are used to represent JSON data types. It is consist
 
 ## Examples
 
-### Create from string
+### Create from bytes
 
-Create object from a string. Returns an error if the string couldn't be parsed.
+Create object from bytes. Returns an error if the bytes are not valid JSON.
 
 ```go
-v, err := jason.NewObjectFromString(s)
+v, err := jason.NewObjectFromBytes(b)
 
 ```
 
 If the root object is not an array, use this method instead. It can then be cased to the expected type with one of the As-Methods.
 
 ```go
-v, err := jason.NewValueFromString(s)
+v, err := jason.NewObjectFromBytes(b)
 
 ```
 

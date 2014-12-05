@@ -47,13 +47,6 @@ func NewValueFromBytes(b []byte) (*Value, error) {
 	return j, err
 }
 
-// Creates a new value from a string.
-// Returns an error if the string is not valid json.
-func NewValueFromString(s string) (*Value, error) {
-	b := []byte(s)
-	return NewValueFromBytes(b)
-}
-
 func objectFromValue(v *Value, err error) (*Object, error) {
 	if err != nil {
 		return nil, err
@@ -68,10 +61,6 @@ func objectFromValue(v *Value, err error) (*Object, error) {
 		}
 
 	}
-}
-
-func NewObjectFromString(s string) (*Object, error) {
-	return objectFromValue(NewValueFromString(s))
 }
 
 func NewObjectFromBytes(b []byte) (*Object, error) {

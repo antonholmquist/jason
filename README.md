@@ -45,7 +45,7 @@ v, err := jason.NewObjectFromBytes(b)
 If the root object is not an array, use this method instead. It can then be cased to the expected type with one of the As-Methods.
 
 ```go
-v, err := jason.NewObjectFromBytes(b)
+v, err := jason.NewValueFromBytes(b)
 
 ```
 
@@ -89,7 +89,7 @@ friends, err := v.GetArray("person", "friends")
 Looping through an array is done with `GetArray()`. It returns an error if the value at that keypath is null (or something else than an array).
 
 ```go
-friends, err := person.GetArray("friends")
+friends, err := person.GetObjectArray("friends")
 for _, friend := range friends {
   name, err := friend.GetString("name")
   age, err := friend.GetNumber("age")
@@ -182,7 +182,7 @@ To run the project tests:
 go test
 ```
 
-## Where does the name come from? It's awful.
+## Where does the name come from?
 
 Well, I like it! I remebered it from an email one of our projects managers sent a couple of years ago.
 

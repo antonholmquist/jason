@@ -1,3 +1,30 @@
+// Use of this source code is governed by a
+// license that can be found in the LICENSE file.
+
+// Jason is designed to be convenient for reading arbitrary JSON while still honoring the strictness of the language.
+// Inspired by other libraries and improved to work well for common use cases.
+// It currently focuses on reading JSON data rather than creating it.
+//
+// Examples
+//
+// JSON is a commonly used data transfer format, so usually the data you want to read comes either as bytes or as an io.Reader.
+//
+// Create an object as from bytes:
+//		v, err := jason.NewObjectFromBytes(b)
+// .. or from a net/http response body:
+//		v, err := jason.NewObjectFromReader(res.body)
+//
+// Read values
+//
+// Reading values is easy and requires you to be specific about the type.
+// If the key path is invalid or the type doesn't match, it will return an error and the default value.
+//
+//		name, err := v.GetString("name")
+//		age, err := v.GetNumber("age")
+//		verified, err := v.GetBoolean("verified")
+//		education, err := v.GetObject("education")
+//		friends, err := v.GetArray("friends")
+
 package jason
 
 import (

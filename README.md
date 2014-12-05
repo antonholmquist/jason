@@ -1,13 +1,13 @@
 
 ![logo](https://us-bucket-host.s3.amazonaws.com/jason/jason_cropped_4.svg)
 
-# JSON Library for Go
+Jason is an easy-to-use JSON library for Go.
 
-[![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE) [![Build Status](https://travis-ci.org/antonholmquist/jason.svg?branch=master)](https://travis-ci.org/antonholmquist/jason)
+[![Build Status](https://travis-ci.org/antonholmquist/jason.svg?branch=master)](https://travis-ci.org/antonholmquist/jason) [![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/antonholmquist/jason) [![license](http://img.shields.io/badge/license-MIT-red.svg?style=flat)](https://raw.githubusercontent.com/antonholmquist/jason/master/LICENSE)
 
+# About
 
-
-Jason is an easy-to-use JSON library for Go. It's designed to be convenient for reading arbitrary JSON while still honoring the strictness of the language. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
+Jason is designed to be convenient for reading arbitrary JSON while still honoring the strictness of the language. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
 
 **Note: The API will be subject to change during 2014. On January 1st 2015 it will be frozen. Do not use in production until then.**
 

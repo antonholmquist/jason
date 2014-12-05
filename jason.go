@@ -356,6 +356,40 @@ func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 	return nil, nil
 }
 
+// Gets the value at key path and attempts to typecast the value into an array of nulls.
+// Returns length, or an error if the value is not a json array or if any of the contained objects are not nulls.
+func (v *Object) GetNullArray(keys ...string) (int64, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return 0, err
+	} else {
+
+		array, err := child.AsArray()
+
+		if err != nil {
+			return 0, err
+		} else {
+
+			var length int64 = 0
+
+			for _, arrayItem := range array {
+				err := arrayItem.AsNull()
+
+				if err != nil {
+					return 0, err
+				} else {
+					length++
+				}
+
+			}
+			return length, nil
+		}
+	}
+
+	return 0, nil
+}
+
 // Returns an error if the value is not actually null
 func (v *Value) AsNull() error {
 	var valid bool

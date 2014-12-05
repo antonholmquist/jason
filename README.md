@@ -129,7 +129,6 @@ func main() {
 
   exampleJSON := `{
     "name": "Walter White",
-
     "age": 51,
     "children": [
       "junior",

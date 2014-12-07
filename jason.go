@@ -47,6 +47,7 @@
 package jason
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -88,9 +89,8 @@ func NewValueFromReader(reader io.Reader) (*Value, error) {
 // Creates a new value from bytes.
 // Returns an error if the bytes are not valid json.
 func NewValueFromBytes(b []byte) (*Value, error) {
-	j := new(Value)
-	err := json.Unmarshal(b, &j.data)
-	return j, err
+	r := bytes.NewReader(b)
+	return NewValueFromReader(r)
 }
 
 func objectFromValue(v *Value, err error) (*Object, error) {
@@ -98,7 +98,7 @@ func objectFromValue(v *Value, err error) (*Object, error) {
 		return nil, err
 	}
 
-	o, err := v.AsObject()
+	o, err := v.Object()
 
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (v *Value) Marshal() ([]byte, error) {
 func (v *Value) get(key string) (*Value, error) {
 
 	// Assume this is an object
-	obj, err := v.AsObject()
+	obj, err := v.Object()
 
 	if err == nil {
 		child, ok := obj.Map()[key]
@@ -172,7 +172,7 @@ func (v *Object) GetObject(keys ...string) (*Object, error) {
 		return nil, err
 	} else {
 
-		obj, err := child.AsObject()
+		obj, err := child.Object()
 
 		if err != nil {
 			return nil, err
@@ -195,7 +195,7 @@ func (v *Object) GetString(keys ...string) (string, error) {
 	if err != nil {
 		return "", err
 	} else {
-		return child.AsString()
+		return child.String()
 	}
 
 	return "", nil
@@ -212,7 +212,7 @@ func (v *Object) GetNull(keys ...string) error {
 		return err
 	}
 
-	return child.AsNull()
+	return child.Null()
 }
 
 // Gets the value at key path and attempts to typecast the value into a float64.
@@ -226,7 +226,7 @@ func (v *Object) GetNumber(keys ...string) (float64, error) {
 		return 0, err
 	} else {
 
-		n, err := child.AsNumber()
+		n, err := child.Number()
 
 		if err != nil {
 			return 0, err
@@ -249,7 +249,7 @@ func (v *Object) GetBoolean(keys ...string) (bool, error) {
 		return false, err
 	}
 
-	return child.AsBoolean()
+	return child.Boolean()
 }
 
 // Gets the value at key path and attempts to typecast the value into an array.
@@ -267,7 +267,7 @@ func (v *Object) GetArray(keys ...string) ([]*Value, error) {
 		return nil, err
 	} else {
 
-		return child.AsArray()
+		return child.Array()
 
 	}
 
@@ -288,7 +288,7 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 		return nil, err
 	} else {
 
-		array, err := child.AsArray()
+		array, err := child.Array()
 
 		if err != nil {
 			return nil, err
@@ -297,7 +297,8 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 			typedArray := make([]*Object, len(array))
 
 			for index, arrayItem := range array {
-				typedArrayItem, err := arrayItem.AsObject()
+				typedArrayItem, err := arrayItem.
+					Object()
 
 				if err != nil {
 					return nil, err
@@ -329,7 +330,7 @@ func (v *Object) GetStringArray(keys ...string) ([]string, error) {
 		return nil, err
 	} else {
 
-		array, err := child.AsArray()
+		array, err := child.Array()
 
 		if err != nil {
 			return nil, err
@@ -338,7 +339,7 @@ func (v *Object) GetStringArray(keys ...string) ([]string, error) {
 			typedArray := make([]string, len(array))
 
 			for index, arrayItem := range array {
-				typedArrayItem, err := arrayItem.AsString()
+				typedArrayItem, err := arrayItem.String()
 
 				if err != nil {
 					return nil, err
@@ -367,7 +368,7 @@ func (v *Object) GetNumberArray(keys ...string) ([]float64, error) {
 		return nil, err
 	} else {
 
-		array, err := child.AsArray()
+		array, err := child.Array()
 
 		if err != nil {
 			return nil, err
@@ -376,7 +377,7 @@ func (v *Object) GetNumberArray(keys ...string) ([]float64, error) {
 			typedArray := make([]float64, len(array))
 
 			for index, arrayItem := range array {
-				typedArrayItem, err := arrayItem.AsNumber()
+				typedArrayItem, err := arrayItem.Number()
 
 				if err != nil {
 					return nil, err
@@ -400,7 +401,7 @@ func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 		return nil, err
 	} else {
 
-		array, err := child.AsArray()
+		array, err := child.Array()
 
 		if err != nil {
 			return nil, err
@@ -409,7 +410,7 @@ func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 			typedArray := make([]bool, len(array))
 
 			for index, arrayItem := range array {
-				typedArrayItem, err := arrayItem.AsBoolean()
+				typedArrayItem, err := arrayItem.Boolean()
 
 				if err != nil {
 					return nil, err
@@ -433,7 +434,7 @@ func (v *Object) GetNullArray(keys ...string) (int64, error) {
 		return 0, err
 	} else {
 
-		array, err := child.AsArray()
+		array, err := child.Array()
 
 		if err != nil {
 			return 0, err
@@ -442,7 +443,7 @@ func (v *Object) GetNullArray(keys ...string) (int64, error) {
 			var length int64 = 0
 
 			for _, arrayItem := range array {
-				err := arrayItem.AsNull()
+				err := arrayItem.Null()
 
 				if err != nil {
 					return 0, err
@@ -459,7 +460,7 @@ func (v *Object) GetNullArray(keys ...string) (int64, error) {
 }
 
 // Returns an error if the value is not actually null
-func (v *Value) AsNull() error {
+func (v *Value) Null() error {
 	var valid bool
 
 	// Check the type of this data
@@ -480,8 +481,8 @@ func (v *Value) AsNull() error {
 // Attempts to typecast the current value into an array.
 // Returns error if the current value is not a json array.
 // Example:
-//		friendsArray, err := friendsValue.AsArray()
-func (v *Value) AsArray() ([]*Value, error) {
+//		friendsArray, err := friendsValue.Array()
+func (v *Value) Array() ([]*Value, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -511,8 +512,8 @@ func (v *Value) AsArray() ([]*Value, error) {
 // Attempts to typecast the current value into a float64.
 // Returns error if the current value is not a json number.
 // Example:
-//		ageNumber, err := ageValue.AsNumber()
-func (v *Value) AsNumber() (float64, error) {
+//		ageNumber, err := ageValue.Number()
+func (v *Value) Number() (float64, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -532,8 +533,8 @@ func (v *Value) AsNumber() (float64, error) {
 // Attempts to typecast the current value into a bool.
 // Returns error if the current value is not a json boolean.
 // Example:
-//		marriedBool, err := marriedValue.AsBoolean()
-func (v *Value) AsBoolean() (bool, error) {
+//		marriedBool, err := marriedValue.Boolean()
+func (v *Value) Boolean() (bool, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -553,8 +554,8 @@ func (v *Value) AsBoolean() (bool, error) {
 // Attempts to typecast the current value into an object.
 // Returns error if the current value is not a json object.
 // Example:
-//		friendObject, err := friendValue.AsObject()
-func (v *Value) AsObject() (*Object, error) {
+//		friendObject, err := friendValue.Object()
+func (v *Value) Object() (*Object, error) {
 
 	var valid bool
 
@@ -591,8 +592,8 @@ func (v *Value) AsObject() (*Object, error) {
 // Attempts to typecast the current value into a string.
 // Returns error if the current value is not a json string
 // Example:
-//		nameObject, err := nameValue.AsString()
-func (v *Value) AsString() (string, error) {
+//		nameObject, err := nameValue.String()
+func (v *Value) String() (string, error) {
 	var valid bool
 
 	// Check the type of this data
@@ -612,12 +613,13 @@ func (v *Value) AsString() (string, error) {
 // Returns the value a json formatted string.
 // Note: The method named String() is used by golang's log method for logging.
 // Example:
-//		log.Println("json: ", value)
-func (v *Value) String() string {
+func (v *Object) String() string {
+
 	f, err := json.Marshal(v.data)
 	if err != nil {
 		return err.Error()
 	}
 
 	return string(f)
+
 }

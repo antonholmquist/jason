@@ -140,7 +140,7 @@ func main() {
     }
   }`
 
-  v, _ := jason.NewObjectFromString(exampleJSON)
+  v, _ := jason.NewObjectFromBytes([]byte(exampleJSON))
 
   name, _ := v.GetString("name")
   age, _ := v.GetNumber("age")
@@ -161,8 +161,8 @@ func main() {
 
   for _, value := range others.Map() {
 
-    s, sErr := value.AsString()
-    n, nErr := value.AsNumber()
+    s, sErr := value.String()
+    n, nErr := value.Number()
 
     if sErr == nil {
       log.Println("string value: ", s)

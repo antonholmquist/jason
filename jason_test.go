@@ -122,7 +122,7 @@ func TestFirst(t *testing.T) {
 	for _, elementValue := range list2Array {
 		//assert.True(element.IsObject() == true, "first fail")
 
-		element, err := elementValue.AsObject()
+		element, err := elementValue.Object()
 
 		s, err = element.GetString("street")
 		assert.True(s == "Street 42" && err == nil, "second fail")
@@ -134,7 +134,7 @@ func TestFirst(t *testing.T) {
 
 		assert.True(key == "name", "country name key incorrect")
 
-		s, err = value.AsString()
+		s, err = value.String()
 		assert.True(s == "Sweden" && err == nil, "country name should be Sweden")
 	}
 }

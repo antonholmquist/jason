@@ -30,7 +30,7 @@ import (
 The following golang values are used to represent JSON data types. It is consistent with how `encoding/json` uses primitive types.
 
 - `bool`, for JSON booleans
-- `float64`, for JSON numbers
+- `json.Number/float64/int64`, for JSON numbers
 - `string`, for JSON strings
 - `[]*Value`, for JSON arrays
 - `map[string]*Value`, for JSON objects
@@ -69,7 +69,7 @@ Reading values is easy. If the key path is invalid or type doesn't match, it wil
 
 ```go
 name, err := v.GetString("name")
-age, err := v.GetNumber("age")
+age, err := v.GetInt64("age")
 verified, err := v.GetBoolean("verified")
 education, err := v.GetObject("education")
 friends, err := v.GetObjectArray("friends")
@@ -83,7 +83,7 @@ Reading nested values is easy. If the path is invalid or type doesn't match, it 
 
 ```go
 name, err := v.GetString("person", "name")
-age, err := v.GetNumber("person", "age")
+age, err := v.GetInt64("person", "age")
 verified, err := v.GetBoolean("person", "verified")
 education, err := v.GetObject("person", "education")
 friends, err := v.GetArray("person", "friends")

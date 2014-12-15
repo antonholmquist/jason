@@ -82,6 +82,7 @@ func (v *Object) Map() map[string]*Value {
 func NewValueFromReader(reader io.Reader) (*Value, error) {
 	j := new(Value)
 	d := json.NewDecoder(reader)
+	d.UseNumber()
 	err := d.Decode(&j.data)
 	return j, err
 }
@@ -215,18 +216,64 @@ func (v *Object) GetNull(keys ...string) error {
 	return child.Null()
 }
 
+// Gets the value at key path and attempts to typecast the value into a number.
+// Returns error if the value is not a json number.
+// Example:
+//		n, err := GetNumber("address", "street_number")
+func (v *Object) GetNumber(keys ...string) (json.Number, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return "", err
+	} else {
+
+		n, err := child.Number()
+
+		if err != nil {
+			return "", err
+		} else {
+			return n, nil
+		}
+	}
+
+	return "", nil
+}
+
 // Gets the value at key path and attempts to typecast the value into a float64.
 // Returns error if the value is not a json number.
 // Example:
 //		n, err := GetNumber("address", "street_number")
-func (v *Object) GetNumber(keys ...string) (float64, error) {
+func (v *Object) GetFloat64(keys ...string) (float64, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
 		return 0, err
 	} else {
 
-		n, err := child.Number()
+		n, err := child.Float64()
+
+		if err != nil {
+			return 0, err
+		} else {
+			return n, nil
+		}
+	}
+
+	return 0, nil
+}
+
+// Gets the value at key path and attempts to typecast the value into a float64.
+// Returns error if the value is not a json number.
+// Example:
+//		n, err := GetNumber("address", "street_number")
+func (v *Object) GetInt64(keys ...string) (int64, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return 0, err
+	} else {
+
+		n, err := child.Int64()
 
 		if err != nil {
 			return 0, err
@@ -354,14 +401,47 @@ func (v *Object) GetStringArray(keys ...string) ([]string, error) {
 	return nil, nil
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of floats.
+// Gets the value at key path and attempts to typecast the value into an array of numbers.
 // Returns error if the value is not a json array or if any of the contained objects are not numbers.
 // Example:
 //		friendAges, err := GetNumberArray("person", "friend_ages")
 //		for i, friendAge := range friendAges {
 //			... // friendAge will be of type float64 here
 //		}
-func (v *Object) GetNumberArray(keys ...string) ([]float64, error) {
+func (v *Object) GetNumberArray(keys ...string) ([]json.Number, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		array, err := child.Array()
+
+		if err != nil {
+			return nil, err
+		} else {
+
+			typedArray := make([]json.Number, len(array))
+
+			for index, arrayItem := range array {
+				typedArrayItem, err := arrayItem.Number()
+
+				if err != nil {
+					return nil, err
+				} else {
+					typedArray[index] = typedArrayItem
+				}
+
+			}
+			return typedArray, nil
+		}
+	}
+	return nil, nil
+}
+
+// Gets the value at key path and attempts to typecast the value into an array of floats.
+// Returns error if the value is not a json array or if any of the contained objects are not numbers.
+func (v *Object) GetFloat64Array(keys ...string) ([]float64, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -377,7 +457,40 @@ func (v *Object) GetNumberArray(keys ...string) ([]float64, error) {
 			typedArray := make([]float64, len(array))
 
 			for index, arrayItem := range array {
-				typedArrayItem, err := arrayItem.Number()
+				typedArrayItem, err := arrayItem.Float64()
+
+				if err != nil {
+					return nil, err
+				} else {
+					typedArray[index] = typedArrayItem
+				}
+
+			}
+			return typedArray, nil
+		}
+	}
+	return nil, nil
+}
+
+// Gets the value at key path and attempts to typecast the value into an array of ints.
+// Returns error if the value is not a json array or if any of the contained objects are not numbers.
+func (v *Object) GetInt64Array(keys ...string) ([]int64, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+
+		array, err := child.Array()
+
+		if err != nil {
+			return nil, err
+		} else {
+
+			typedArray := make([]int64, len(array))
+
+			for index, arrayItem := range array {
+				typedArrayItem, err := arrayItem.Int64()
 
 				if err != nil {
 					return nil, err
@@ -509,25 +622,53 @@ func (v *Value) Array() ([]*Value, error) {
 
 }
 
-// Attempts to typecast the current value into a float64.
+// Attempts to typecast the current value into a number.
 // Returns error if the current value is not a json number.
 // Example:
 //		ageNumber, err := ageValue.Number()
-func (v *Value) Number() (float64, error) {
+func (v *Value) Number() (json.Number, error) {
 	var valid bool
 
 	// Check the type of this data
 	switch v.data.(type) {
-	case float64:
+	case json.Number:
 		valid = true
 		break
 	}
 
 	if valid {
-		return v.data.(float64), nil
+		return v.data.(json.Number), nil
 	}
 
-	return 0, errors.New("not a number")
+	return "", errors.New("not a number")
+}
+
+// Attempts to typecast the current value into a float64.
+// Returns error if the current value is not a json number.
+// Example:
+//		percentage, err := v.Float64()
+func (v *Value) Float64() (float64, error) {
+	n, err := v.Number()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return n.Float64()
+}
+
+// Attempts to typecast the current value into a int64.
+// Returns error if the current value is not a json number.
+// Example:
+//		id, err := v.Int64()
+func (v *Value) Int64() (int64, error) {
+	n, err := v.Number()
+
+	if err != nil {
+		return 0, err
+	}
+
+	return n.Int64()
 }
 
 // Attempts to typecast the current value into a bool.

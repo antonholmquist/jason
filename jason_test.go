@@ -73,10 +73,11 @@ func TestFirst(t *testing.T) {
 	//log.Println("s: ", s.String())
 
 	_, err = j.GetNumber("age")
+	log.Println("error: ", err)
 	assert.True(err == nil, "age should be a number")
 
-	n, err := j.GetNumber("age")
-	assert.True(n == 29.0 && err == nil, "age mismatch")
+	n, err := j.GetInt64("age")
+	assert.True(n == 29 && err == nil, "age mismatch")
 
 	age, err := j.Get("age")
 	assert.True(age != nil && err == nil, "age should exist")

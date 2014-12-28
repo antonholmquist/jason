@@ -110,13 +110,13 @@ func TestFirst(t *testing.T) {
 	b, err = j.GetBoolean("invalid_field")
 	assert.True(b == false && err != nil, "bool invalid test")
 
-	list, err := j.GetArray("list")
+	list, err := j.GetValueArray("list")
 	assert.True(list != nil && err == nil, "list should be an array")
 
-	list2, err := j.GetArray("list2")
+	list2, err := j.GetValueArray("list2")
 	assert.True(list2 != nil && err == nil, "list2 should be an array")
 
-	list2Array, err := j.GetArray("list2")
+	list2Array, err := j.GetValueArray("list2")
 	assert.True(err == nil, "List2 should not return error on AsArray")
 	assert.True(len(list2Array) == 2, "List2 should should have length 2")
 

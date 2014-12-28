@@ -23,11 +23,11 @@
 //		age, err := v.GetNumber("age")
 //		verified, err := v.GetBoolean("verified")
 //		education, err := v.GetObject("education")
-//		friends, err := v.GetArray("friends")
+//		friends, err := v.GetObjectArray("friends")
 //
 // Loop through array
 //
-// Getting an array is done by Get<Type>Array() or the generic GetArray(). It returns an error if the value at that keypath is null (or something else than the type).
+// Getting an array is done by Get<Type>Array() or the generic GetValueArray(). It returns an error if the value at that keypath is null (or something else than the type).
 //
 //		friends, err := person.GetObjectArray("friends")
 //		for _, friend := range friends {
@@ -303,11 +303,11 @@ func (v *Object) GetBoolean(keys ...string) (bool, error) {
 // Returns error if the value is not a json array.
 // Consider using the more specific Get<Type>Array() since it may reduce later type casts.
 // Example:
-//		friends, err := GetArray("person", "friends")
+//		friends, err := GetValueArray("person", "friends")
 //		for i, friend := range friends {
 //			... // friend will be of type Value here
 //		}
-func (v *Object) GetArray(keys ...string) ([]*Value, error) {
+func (v *Object) GetValueArray(keys ...string) ([]*Value, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {

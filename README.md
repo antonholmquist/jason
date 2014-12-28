@@ -86,13 +86,13 @@ name, err := v.GetString("person", "name")
 age, err := v.GetInt64("person", "age")
 verified, err := v.GetBoolean("person", "verified")
 education, err := v.GetObject("person", "education")
-friends, err := v.GetArray("person", "friends")
+friends, err := v.GetObjectArray("person", "friends")
 
 ```
 
 ### Loop through array
 
-Looping through an array is done with `GetArray()`. It returns an error if the value at that keypath is null (or something else than an array).
+Looping through an array is done with `GetValueArray()` or `GetObjectArray()`. It returns an error if the value at that keypath is null (or something else than an array).
 
 ```go
 friends, err := person.GetObjectArray("friends")

@@ -79,10 +79,10 @@ func TestFirst(t *testing.T) {
 	n, err := j.GetInt64("age")
 	assert.True(n == 29 && err == nil, "age mismatch")
 
-	age, err := j.Get("age")
+	age, err := j.GetValue("age")
 	assert.True(age != nil && err == nil, "age should exist")
 
-	age2, err := j.Get("age2")
+	age2, err := j.GetValue("age2")
 	assert.True(age2 == nil && err != nil, "age2 should not exist")
 
 	address, err := j.GetObject("address")

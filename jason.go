@@ -157,8 +157,8 @@ func (v *Value) getPath(keys []string) (*Value, error) {
 // Returns error if the value does not exist.
 // Consider using the more specific Get<Type>(..) methods instead.
 // Example:
-//		value, err := Get("address", "street")
-func (v *Object) Get(keys ...string) (*Value, error) {
+//		value, err := GetValue("address", "street")
+func (v *Object) GetValue(keys ...string) (*Value, error) {
 	return v.getPath(keys)
 }
 

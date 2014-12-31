@@ -9,8 +9,6 @@ Jason is an easy-to-use JSON library for Go.
 
 Jason is designed to be convenient for reading arbitrary JSON while still honoring the strictness of the language. Inspired by other libraries and improved to work well for common use cases. It currently focuses on reading JSON data rather than creating it. [API Documentation](http://godoc.org/github.com/antonholmquist/jason) can be found on godoc.org.
 
-**Note: The API will be subject to change during 2014. On January 1st 2015 it will be frozen. Do not use in production until then.**
-
 ## Install
 
 ```shell

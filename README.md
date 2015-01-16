@@ -174,7 +174,7 @@ func main() {
 
 ## Documentation
 
-Documentation can be found a godoc:
+Documentation can be found on godoc:
 
 https://godoc.org/github.com/antonholmquist/jason
 
@@ -191,7 +191,7 @@ Go 1.1 and up.
 
 ## Where does the name come from?
 
-I remebered it from an email one of our projects managers sent a couple of years ago.
+I remembered it from an email one of our projects managers sent a couple of years ago.
 
 > "Don't worry. We can handle both XML and Jason"
 

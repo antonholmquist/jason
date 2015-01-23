@@ -182,8 +182,6 @@ func (v *Object) GetObject(keys ...string) (*Object, error) {
 		}
 
 	}
-
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a string.
@@ -198,8 +196,6 @@ func (v *Object) GetString(keys ...string) (string, error) {
 	} else {
 		return child.String()
 	}
-
-	return "", nil
 }
 
 // Gets the value at key path and attempts to typecast the value into null.
@@ -235,8 +231,6 @@ func (v *Object) GetNumber(keys ...string) (json.Number, error) {
 			return n, nil
 		}
 	}
-
-	return "", nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a float64.
@@ -258,8 +252,6 @@ func (v *Object) GetFloat64(keys ...string) (float64, error) {
 			return n, nil
 		}
 	}
-
-	return 0, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a float64.
@@ -281,8 +273,6 @@ func (v *Object) GetInt64(keys ...string) (int64, error) {
 			return n, nil
 		}
 	}
-
-	return 0, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into a bool.
@@ -317,8 +307,6 @@ func (v *Object) GetValueArray(keys ...string) ([]*Value, error) {
 		return child.Array()
 
 	}
-
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of objects.
@@ -357,8 +345,6 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 			return typedArray, nil
 		}
 	}
-
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of string.
@@ -398,7 +384,6 @@ func (v *Object) GetStringArray(keys ...string) ([]string, error) {
 			return typedArray, nil
 		}
 	}
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of numbers.
@@ -436,7 +421,6 @@ func (v *Object) GetNumberArray(keys ...string) ([]json.Number, error) {
 			return typedArray, nil
 		}
 	}
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of floats.
@@ -469,7 +453,6 @@ func (v *Object) GetFloat64Array(keys ...string) ([]float64, error) {
 			return typedArray, nil
 		}
 	}
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of ints.
@@ -502,7 +485,6 @@ func (v *Object) GetInt64Array(keys ...string) ([]int64, error) {
 			return typedArray, nil
 		}
 	}
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of bools.
@@ -535,7 +517,6 @@ func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 			return typedArray, nil
 		}
 	}
-	return nil, nil
 }
 
 // Gets the value at key path and attempts to typecast the value into an array of nulls.
@@ -568,8 +549,6 @@ func (v *Object) GetNullArray(keys ...string) (int64, error) {
 			return length, nil
 		}
 	}
-
-	return 0, nil
 }
 
 // Returns an error if the value is not actually null

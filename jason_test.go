@@ -142,7 +142,7 @@ func TestFirst(t *testing.T) {
 }
 
 func TestSecond(t *testing.T) {
-	json := `
+	testJSON := `
   {
    "data": [
       {
@@ -189,7 +189,8 @@ func TestSecond(t *testing.T) {
   }`
 
 	assert := NewAssert(t)
-	j, err := NewObjectFromBytes([]byte(json))
+
+	j, err := NewObjectFromBytes([]byte(testJSON))
 
 	assert.True(j != nil && err == nil, "failed to parse json")
 

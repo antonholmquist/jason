@@ -764,3 +764,12 @@ func (v *Object) String() string {
 	return string(f)
 
 }
+
+// UnmarshalJSON implements the encoding/json Marshaller interface.
+//
+// Example:
+//             var v jason.Value
+//             err := json.Unmarshal(`{"foo": "bar"}`, &v)
+func (j *Value) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &j.data)
+}

@@ -69,6 +69,15 @@ type Object struct {
 	valid bool
 }
 
+//Get keys of an object
+func (v *Object) GetKeys() []string {
+	slc := make([]string, 0)
+	for key, _ := range v.Map() {
+		slc = append(slc, key)
+	}
+	return slc
+}
+
 // Returns the golang map.
 // Needed when iterating through the values of the object.
 func (v *Object) Map() map[string]*Value {

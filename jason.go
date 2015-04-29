@@ -69,7 +69,7 @@ type Object struct {
 	valid bool
 }
 
-//Get keys of an object
+//Useful when naming of keys is beyond your control (user-supplied)
 func (v *Object) GetKeys() []string {
 	slc := make([]string, 0)
 	for key, _ := range v.Map() {

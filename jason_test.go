@@ -78,6 +78,14 @@ func TestFirst(t *testing.T) {
 	n, err := j.GetInt64("age")
 	assert.True(n == 29 && err == nil, "age mismatch")
 
+	ageInterface, err := j.GetInterface("age")
+	assert.True(ageInterface != nil, "should be defined")
+	assert.True(err == nil, "age interface error")
+
+	invalidInterface, err := j.GetInterface("not_existing")
+	assert.True(invalidInterface == nil, "should not give error here")
+	assert.True(err != nil, "should give error here")
+
 	age, err := j.GetValue("age")
 	assert.True(age != nil && err == nil, "age should exist")
 

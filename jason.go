@@ -121,6 +121,11 @@ func (v *Value) Marshal() ([]byte, error) {
 	return json.Marshal(v.data)
 }
 
+// Get the interyling data as interface
+func (v *Value) Interface() interface{} {
+	return v.data
+}
+
 // Private Get
 func (v *Value) get(key string) (*Value, error) {
 
@@ -272,6 +277,20 @@ func (v *Object) GetInt64(keys ...string) (int64, error) {
 		} else {
 			return n, nil
 		}
+	}
+}
+
+// Gets the value at key path and attempts to typecast the value into a float64.
+// Returns error if the value is not a json number.
+// Example:
+//		v, err := GetInterface("address", "anything")
+func (v *Object) GetInterface(keys ...string) (interface{}, error) {
+	child, err := v.getPath(keys)
+
+	if err != nil {
+		return nil, err
+	} else {
+		return child.Interface(), nil
 	}
 }
 

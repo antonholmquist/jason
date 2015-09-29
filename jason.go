@@ -50,6 +50,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -137,7 +138,7 @@ func (v *Value) get(key string) (*Value, error) {
 		if ok {
 			return child, nil
 		} else {
-			return nil, errors.New("key not found")
+			return nil, fmt.Errorf("key '%s' not found", key)
 		}
 	}
 

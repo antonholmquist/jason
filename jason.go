@@ -64,6 +64,18 @@ var (
 	ErrNotString = errors.New("not a string")
 )
 
+type KeyNotFoundError struct {
+	Key string
+}
+
+func (k KeyNotFoundError) Error() string {
+	if k.Key != "" {
+		return fmt.Sprintf("key '%s' not found", k.Key)
+	}
+
+	return "key not found"
+}
+
 // Value represents an arbitrary JSON value.
 // It may contain a bool, number, string, object, array or null.
 type Value struct {
@@ -148,7 +160,7 @@ func (v *Value) get(key string) (*Value, error) {
 		if ok {
 			return child, nil
 		} else {
-			return nil, fmt.Errorf("key '%s' not found", key)
+			return nil, KeyNotFoundError{key}
 		}
 	}
 

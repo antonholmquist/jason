@@ -1,6 +1,7 @@
 package jason
 
 import (
+	"encoding/json"
 	"log"
 	"testing"
 )
@@ -148,7 +149,7 @@ func TestFirst(t *testing.T) {
 }
 
 func TestSecond(t *testing.T) {
-	json := `
+	testJSON := `
   {
    "data": [
       {
@@ -195,7 +196,8 @@ func TestSecond(t *testing.T) {
   }`
 
 	assert := NewAssert(t)
-	j, err := NewObjectFromBytes([]byte(json))
+
+	j, err := NewObjectFromBytes([]byte(testJSON))
 
 	assert.True(j != nil && err == nil, "failed to parse json")
 
@@ -235,4 +237,18 @@ func TestSecond(t *testing.T) {
 
 	}
 
+}
+
+func TestUnmarshalJSON(t *testing.T) {
+	assert := NewAssert(t)
+	str := `{ "data": [{ "bar": 12 }]}`
+
+	var j *Value = &Value{}
+
+	err := json.Unmarshal([]byte(str), j)
+
+	assert.True(j != nil && err == nil, "failed to parse json")
+
+	dataArray, err := j.GetObjectArray("data")
+	assert.True(dataArray != nil && err == nil, "data should be an object array")
 }

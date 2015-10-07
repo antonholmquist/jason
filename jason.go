@@ -172,7 +172,7 @@ func (v *Object) GetValue(keys ...string) (*Value, error) {
 // Returns error if the value is not a json object.
 // Example:
 //		object, err := GetObject("person", "address")
-func (v *Object) GetObject(keys ...string) (*Object, error) {
+func (v *Value) GetObject(keys ...string) (*Object, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -194,7 +194,7 @@ func (v *Object) GetObject(keys ...string) (*Object, error) {
 // Returns error if the value is not a json string.
 // Example:
 //		string, err := GetString("address", "street")
-func (v *Object) GetString(keys ...string) (string, error) {
+func (v *Value) GetString(keys ...string) (string, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -317,7 +317,7 @@ func (v *Object) GetBoolean(keys ...string) (bool, error) {
 //		for i, friend := range friends {
 //			... // friend will be of type Value here
 //		}
-func (v *Object) GetValueArray(keys ...string) ([]*Value, error) {
+func (v *Value) GetValueArray(keys ...string) ([]*Value, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -336,7 +336,7 @@ func (v *Object) GetValueArray(keys ...string) ([]*Value, error) {
 //		for i, friend := range friends {
 //			... // friend will be of type Object here
 //		}
-func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
+func (v *Value) GetObjectArray(keys ...string) ([]*Object, error) {
 	child, err := v.getPath(keys)
 
 	if err != nil {
@@ -762,4 +762,13 @@ func (v *Object) String() string {
 
 	return string(f)
 
+}
+
+// UnmarshalJSON implements the encoding/json Marshaller interface.
+//
+// Example:
+//             var v jason.Value
+//             err := json.Unmarshal(`{"foo": "bar"}`, &v)
+func (j *Value) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &j.data)
 }

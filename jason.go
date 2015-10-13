@@ -54,6 +54,28 @@ import (
 	"io"
 )
 
+// Error values returned when validation functions fail
+var (
+	ErrNotNull   = errors.New("is not null")
+	ErrNotArray  = errors.New("Not an array")
+	ErrNotNumber = errors.New("not a number")
+	ErrNotBool   = errors.New("no bool")
+	ErrNotObject = errors.New("not an object")
+	ErrNotString = errors.New("not a string")
+)
+
+type KeyNotFoundError struct {
+	Key string
+}
+
+func (k KeyNotFoundError) Error() string {
+	if k.Key != "" {
+		return fmt.Sprintf("key '%s' not found", k.Key)
+	}
+
+	return "key not found"
+}
+
 // Value represents an arbitrary JSON value.
 // It may contain a bool, number, string, object, array or null.
 type Value struct {
@@ -138,7 +160,7 @@ func (v *Value) get(key string) (*Value, error) {
 		if ok {
 			return child, nil
 		} else {
-			return nil, fmt.Errorf("key '%s' not found", key)
+			return nil, KeyNotFoundError{key}
 		}
 	}
 
@@ -586,7 +608,7 @@ func (v *Value) Null() error {
 		return nil
 	}
 
-	return errors.New("is not null")
+	return ErrNotNull
 
 }
 
@@ -617,7 +639,7 @@ func (v *Value) Array() ([]*Value, error) {
 		return slice, nil
 	}
 
-	return slice, errors.New("Not an array")
+	return slice, ErrNotArray
 
 }
 
@@ -639,7 +661,7 @@ func (v *Value) Number() (json.Number, error) {
 		return v.data.(json.Number), nil
 	}
 
-	return "", errors.New("not a number")
+	return "", ErrNotNumber
 }
 
 // Attempts to typecast the current value into a float64.
@@ -688,7 +710,7 @@ func (v *Value) Boolean() (bool, error) {
 		return v.data.(bool), nil
 	}
 
-	return false, errors.New("no bool")
+	return false, ErrNotBool
 }
 
 // Attempts to typecast the current value into an object.
@@ -726,7 +748,7 @@ func (v *Value) Object() (*Object, error) {
 		return obj, nil
 	}
 
-	return nil, errors.New("not an object")
+	return nil, ErrNotObject
 }
 
 // Attempts to typecast the current value into a string.
@@ -747,7 +769,7 @@ func (v *Value) String() (string, error) {
 		return v.data.(string), nil
 	}
 
-	return "", errors.New("not a string")
+	return "", ErrNotString
 }
 
 // Returns the value a json formatted string.

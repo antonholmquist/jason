@@ -236,3 +236,53 @@ func TestSecond(t *testing.T) {
 	}
 
 }
+
+func TestErrors(t *testing.T) {
+	json := `
+  {
+    "string": "hello",
+    "number": 1,
+    "array": [1,2,3]
+  }`
+
+	errstr := "expected an error getting %s, but got '%s'"
+
+	j, err := NewObjectFromBytes([]byte(json))
+	if err != nil {
+		t.Fatal("failed to parse json")
+	}
+
+	if _, err = j.GetObject("string"); err != ErrNotObject {
+		t.Errorf(errstr, "object", err)
+	}
+
+	if err = j.GetNull("string"); err != ErrNotNull {
+		t.Errorf(errstr, "null", err)
+	}
+
+	if _, err = j.GetStringArray("string"); err != ErrNotArray {
+		t.Errorf(errstr, "array", err)
+	}
+
+	if _, err = j.GetStringArray("array"); err != ErrNotString {
+		t.Errorf(errstr, "string array", err)
+	}
+
+	if _, err = j.GetNumber("array"); err != ErrNotNumber {
+		t.Errorf(errstr, "number", err)
+	}
+
+	if _, err = j.GetBoolean("array"); err != ErrNotBool {
+		t.Errorf(errstr, "boolean", err)
+	}
+
+	if _, err = j.GetString("number"); err != ErrNotString {
+		t.Errorf(errstr, "string", err)
+	}
+
+	_, err = j.GetString("not_found")
+	if e, ok := err.(KeyNotFoundError); !ok {
+		t.Errorf(errstr, "key not found error", e)
+	}
+
+}

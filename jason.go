@@ -56,12 +56,13 @@ import (
 
 // Error values returned when validation functions fail
 var (
-	ErrNotNull   = errors.New("is not null")
-	ErrNotArray  = errors.New("Not an array")
-	ErrNotNumber = errors.New("not a number")
-	ErrNotBool   = errors.New("no bool")
-	ErrNotObject = errors.New("not an object")
-	ErrNotString = errors.New("not a string")
+	ErrNotNull        = errors.New("is not null")
+	ErrNotArray       = errors.New("Not an array")
+	ErrNotNumber      = errors.New("not a number")
+	ErrNotBool        = errors.New("no bool")
+	ErrNotObject      = errors.New("not an object")
+	ErrNotObjectArray = errors.New("not an object array")
+	ErrNotString      = errors.New("not a string")
 )
 
 type KeyNotFoundError struct {
@@ -735,7 +736,6 @@ func (v *Value) Object() (*Object, error) {
 		m := make(map[string]*Value)
 
 		if valid {
-
 			for key, element := range v.data.(map[string]interface{}) {
 				m[key] = &Value{element, true}
 
@@ -749,6 +749,43 @@ func (v *Value) Object() (*Object, error) {
 	}
 
 	return nil, ErrNotObject
+}
+
+// Attempts to typecast the current value into an object arrau.
+// Returns error if the current value is not an array of json objects
+// Example:
+//		friendObjects, err := friendValues.ObjectArray()
+func (v *Value) ObjectArray() ([]*Object, error) {
+
+	var valid bool
+
+	// Check the type of this data
+	switch v.data.(type) {
+	case []map[string]interface{}:
+		valid = true
+		break
+	}
+
+	// Unsure if this is a good way to use slices, it's probably not
+	var slice []*Object
+
+	if valid {
+
+		for _, element := range v.data.([]interface{}) {
+			childValue := Value{element, true}
+			childObject, err := childValue.Object()
+
+			if err != nil {
+				return nil, ErrNotObjectArray
+			}
+			slice = append(slice, childObject)
+		}
+
+		return slice, nil
+	}
+
+	return nil, ErrNotObjectArray
+
 }
 
 // Attempts to typecast the current value into a string.

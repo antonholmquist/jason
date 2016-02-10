@@ -761,7 +761,7 @@ func (v *Value) ObjectArray() ([]*Object, error) {
 
 	// Check the type of this data
 	switch v.data.(type) {
-	case []map[string]interface{}:
+	case []interface{}:
 		valid = true
 		break
 	}

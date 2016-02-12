@@ -172,6 +172,133 @@ func main() {
 
 ```
 
+## Sample App 2
+
+```go
+package main
+
+import (
+	"github.com/ibmendoza/jason"
+	"log"
+)
+
+func processSlc(slc []*jason.Object) {
+	lenSlcKeys := len(slc)
+	var err error
+	var title, url string
+	for i := 0; i < lenSlcKeys; i++ {
+
+		//print object
+		obj, err1 := slc[i].GetObject()
+		log.Println("OBJECT")
+		if err1 == nil {
+			log.Println(obj)
+
+			log.Println("TITLE")
+			title, err = obj.GetString("title")
+
+			if err == nil {
+				log.Println(title)
+			}
+
+			log.Println("URL")
+			url, err = obj.GetString("url")
+
+			if err == nil {
+				log.Println(url)
+			}
+		}
+	}
+}
+
+func main() {
+	exampleJSON :=
+		`
+{
+	"a1" : {
+		"name" : "HEADING 1",
+		"b2" : {
+			"name" : "Heading 1.1",
+			"entries" : [{
+					"title" : "Title1",
+					"url" : "/url1"
+				}, {
+					"title" : "Title2",
+					"url" : "/url2"
+				}
+			]
+		}
+	},
+
+	"a2" : {
+		"name" : "HEADING 2",
+		"entries" : [{
+				"title" : "Title1",
+				"url" : "/url1"
+			}, {
+				"title" : "Title2",
+				"url" : "/url2"
+			}
+		],
+		"b2" : {
+			"name" : "Heading 2.1",
+			"entries" : [{
+					"title" : "Title1",
+					"url" : "/url1"
+				}, {
+					"title" : "Title2",
+					"url" : "/url2"
+				}
+			]
+		}
+	}
+} 
+`
+
+	objA, _ := jason.NewObjectFromBytes([]byte(exampleJSON))
+
+	slcKeys := objA.GetKeys()
+	lenSlcKeys := len(slcKeys)
+
+	if lenSlcKeys == 0 {
+		log.Fatal("No object key")
+	}
+
+	if lenSlcKeys == 1 {
+		log.Println(slcKeys)
+	}
+
+	if lenSlcKeys > 1 {
+		log.Println("MORE THAN 1", slcKeys)
+	}
+
+	slc2 := make([]*jason.Object, 0)
+
+	for i := 0; i < lenSlcKeys; i++ {
+		obj, err1 := objA.GetObject(slcKeys[i])
+		if err1 == nil {
+			slc2 = append(slc2, obj)
+		}
+
+		//get heading name
+		str, err2 := obj.GetString("name")
+		if err2 == nil {
+			log.Println("NAME")
+			log.Println(str)
+		}
+
+		//get entries array
+		objArr, err3 := obj.GetObjectArray("entries")
+		if err3 == nil {
+			log.Println("ENTRIES")
+			log.Println(objArr)
+
+			processSlc(objArr)
+		}
+	}
+}
+```
+
 ## Documentation
 
 Documentation can be found on godoc:

@@ -93,6 +93,11 @@ type Object struct {
 	valid bool
 }
 
+// Marshal into bytes.
+func (v *Object) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.m)
+}
+
 // Returns the golang map.
 // Needed when iterating through the values of the object.
 func (v *Object) Map() map[string]*Value {
@@ -143,6 +148,11 @@ func NewObjectFromReader(reader io.Reader) (*Object, error) {
 // Marshal into bytes.
 func (v *Value) Marshal() ([]byte, error) {
 	return json.Marshal(v.data)
+}
+
+// Marshal into bytes
+func (v *Value) MarshalJSON() ([]byte, error) {
+	return v.Marshal()
 }
 
 // Get the interyling data as interface

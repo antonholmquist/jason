@@ -385,8 +385,7 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 			typedArray := make([]*Object, len(array))
 
 			for index, arrayItem := range array {
-				typedArrayItem, err := arrayItem.
-					Object()
+				typedArrayItem, err := arrayItem.Object()
 
 				if err != nil {
 					return nil, err

@@ -123,6 +123,14 @@ func NewValueFromBytes(b []byte) (*Value, error) {
 	return NewValueFromReader(r)
 }
 
+// Creates a new value from an inteface
+func NewValueFromInterface(i interface{}) (*Value, error) {
+	return &Value{
+		data:   i,
+		exists: true,
+	}, nil
+}
+
 func objectFromValue(v *Value, err error) (*Object, error) {
 	if err != nil {
 		return nil, err
@@ -143,6 +151,10 @@ func NewObjectFromBytes(b []byte) (*Object, error) {
 
 func NewObjectFromReader(reader io.Reader) (*Object, error) {
 	return objectFromValue(NewValueFromReader(reader))
+}
+
+func NewObjectFromMap(m map[string]interface{}) (*Object, error) {
+	return objectFromValue(NewValueFromInterface(m))
 }
 
 // Marshal into bytes.
@@ -680,6 +692,12 @@ func (v *Value) Number() (json.Number, error) {
 // Example:
 //		percentage, err := v.Float64()
 func (v *Value) Float64() (float64, error) {
+	if n, ok := v.data.(float64); ok {
+		return n, nil
+	} else if n, ok := v.data.(int64); ok {
+		return float64(n), nil
+	}
+
 	n, err := v.Number()
 
 	if err != nil {
@@ -694,6 +712,12 @@ func (v *Value) Float64() (float64, error) {
 // Example:
 //		id, err := v.Int64()
 func (v *Value) Int64() (int64, error) {
+	if n, ok := v.data.(int64); ok {
+		return n, nil
+	} else if n, ok := v.data.(float64); ok {
+		return int64(n), nil
+	}
+
 	n, err := v.Number()
 
 	if err != nil {

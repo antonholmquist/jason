@@ -52,6 +52,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 )
 
 // Error values returned when validation functions fail
@@ -123,6 +124,16 @@ func NewValueFromBytes(b []byte) (*Value, error) {
 	return NewValueFromReader(r)
 }
 
+// Create a new value from specific file name.
+// Returns an error if the file is invalid or it does not contain valid json.
+func NewValueFromFile(filename string) (*Value, error) {
+	r, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	return NewValueFromReader(r)
+}
+
 func objectFromValue(v *Value, err error) (*Object, error) {
 	if err != nil {
 		return nil, err
@@ -143,6 +154,10 @@ func NewObjectFromBytes(b []byte) (*Object, error) {
 
 func NewObjectFromReader(reader io.Reader) (*Object, error) {
 	return objectFromValue(NewValueFromReader(reader))
+}
+
+func NewObjectFromFile(filename string) (*Object, error) {
+	return objectFromValue(NewValueFromFile(filename))
 }
 
 // Marshal into bytes.

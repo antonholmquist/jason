@@ -113,6 +113,7 @@ func NewValueFromReader(reader io.Reader) (*Value, error) {
 	d := json.NewDecoder(reader)
 	d.UseNumber()
 	err := d.Decode(&j.data)
+	j.exists = err == nil
 	return j, err
 }
 

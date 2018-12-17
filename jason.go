@@ -824,7 +824,7 @@ func (v *Value) String() (string, error) {
 // Example:
 func (v *Object) String() string {
 
-	f, err := json.Marshal(v.data)
+	f, err := json.MarshalIndent(v.data, "", "	")
 	if err != nil {
 		return err.Error()
 	}

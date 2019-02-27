@@ -93,18 +93,18 @@ type Object struct {
 	valid bool
 }
 
-// Marshal into bytes.
+// MarshalJSON: Marshal into bytes.
 func (v *Object) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.m)
 }
 
-// Returns the golang map.
+// Map returns the golang map.
 // Needed when iterating through the values of the object.
 func (v *Object) Map() map[string]*Value {
 	return v.m
 }
 
-// Creates a new value from an io.reader.
+// NewValueFromReader: Creates a new value from an io.reader.
 // Returns an error if the reader does not contain valid json.
 // Useful for parsing the body of a net/http response.
 // Example: NewFromReader(res.Body)
@@ -116,7 +116,7 @@ func NewValueFromReader(reader io.Reader) (*Value, error) {
 	return j, err
 }
 
-// Creates a new value from bytes.
+// NewValueFromBytes: Creates a new value from bytes.
 // Returns an error if the bytes are not valid json.
 func NewValueFromBytes(b []byte) (*Value, error) {
 	r := bytes.NewReader(b)
@@ -150,12 +150,12 @@ func (v *Value) Marshal() ([]byte, error) {
 	return json.Marshal(v.data)
 }
 
-// Marshal into bytes
+// MarshalJSON: Marshal into bytes
 func (v *Value) MarshalJSON() ([]byte, error) {
 	return v.Marshal()
 }
 
-// Get the interyling data as interface
+// Interface gets the interyling data as interface
 func (v *Value) Interface() interface{} {
 	return v.data
 }
@@ -192,7 +192,7 @@ func (v *Value) getPath(keys []string) (*Value, error) {
 	return current, nil
 }
 
-// Gets the value at key path.
+// GetValue gets the value at key path.
 // Returns error if the value does not exist.
 // Consider using the more specific Get<Type>(..) methods instead.
 // Example:
@@ -201,7 +201,7 @@ func (v *Object) GetValue(keys ...string) (*Value, error) {
 	return v.getPath(keys)
 }
 
-// Gets the value at key path and attempts to typecast the value into an object.
+// GetObject gets the value at key path and attempts to typecast the value into an object.
 // Returns error if the value is not a json object.
 // Example:
 //		object, err := GetObject("person", "address")
@@ -223,7 +223,7 @@ func (v *Object) GetObject(keys ...string) (*Object, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into a string.
+// GetString gets the value at key path and attempts to typecast the value into a string.
 // Returns error if the value is not a json string.
 // Example:
 //		string, err := GetString("address", "street")
@@ -237,7 +237,7 @@ func (v *Object) GetString(keys ...string) (string, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into null.
+// GetNull gets the value at key path and attempts to typecast the value into null.
 // Returns error if the value is not json null.
 // Example:
 //		err := GetNull("address", "street")
@@ -251,7 +251,7 @@ func (v *Object) GetNull(keys ...string) error {
 	return child.Null()
 }
 
-// Gets the value at key path and attempts to typecast the value into a number.
+// GetNumber gets the value at key path and attempts to typecast the value into a number.
 // Returns error if the value is not a json number.
 // Example:
 //		n, err := GetNumber("address", "street_number")
@@ -272,7 +272,7 @@ func (v *Object) GetNumber(keys ...string) (json.Number, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into a float64.
+// GetFloat64 gets the value at key path and attempts to typecast the value into a float64.
 // Returns error if the value is not a json number.
 // Example:
 //		n, err := GetNumber("address", "street_number")
@@ -293,7 +293,7 @@ func (v *Object) GetFloat64(keys ...string) (float64, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into a float64.
+// GetInt64 gets the value at key path and attempts to typecast the value into a float64.
 // Returns error if the value is not a json number.
 // Example:
 //		n, err := GetNumber("address", "street_number")
@@ -314,7 +314,7 @@ func (v *Object) GetInt64(keys ...string) (int64, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into a float64.
+// GetInterface gets the value at key path and attempts to typecast the value into a float64.
 // Returns error if the value is not a json number.
 // Example:
 //		v, err := GetInterface("address", "anything")
@@ -328,7 +328,7 @@ func (v *Object) GetInterface(keys ...string) (interface{}, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into a bool.
+// GetBoolean gets the value at key path and attempts to typecast the value into a bool.
 // Returns error if the value is not a json boolean.
 // Example:
 //		married, err := GetBoolean("person", "married")
@@ -342,7 +342,7 @@ func (v *Object) GetBoolean(keys ...string) (bool, error) {
 	return child.Boolean()
 }
 
-// Gets the value at key path and attempts to typecast the value into an array.
+// GetValueArray gets the value at key path and attempts to typecast the value into an array.
 // Returns error if the value is not a json array.
 // Consider using the more specific Get<Type>Array() since it may reduce later type casts.
 // Example:
@@ -362,7 +362,7 @@ func (v *Object) GetValueArray(keys ...string) ([]*Value, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of objects.
+// GetObjectArray gets the value at key path and attempts to typecast the value into an array of objects.
 // Returns error if the value is not a json array or if any of the contained objects are not objects.
 // Example:
 //		friends, err := GetObjectArray("person", "friends")
@@ -400,7 +400,7 @@ func (v *Object) GetObjectArray(keys ...string) ([]*Object, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of string.
+// GetStringArray gets the value at key path and attempts to typecast the value into an array of string.
 // Returns error if the value is not a json array or if any of the contained objects are not strings.
 // Gets the value at key path and attempts to typecast the value into an array of objects.
 // Returns error if the value is not a json array or if any of the contained objects are not objects.
@@ -439,7 +439,7 @@ func (v *Object) GetStringArray(keys ...string) ([]string, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of numbers.
+// GetNumberArray gets the value at key path and attempts to typecast the value into an array of numbers.
 // Returns error if the value is not a json array or if any of the contained objects are not numbers.
 // Example:
 //		friendAges, err := GetNumberArray("person", "friend_ages")
@@ -476,7 +476,7 @@ func (v *Object) GetNumberArray(keys ...string) ([]json.Number, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of floats.
+// GetFloat64Array gets the value at key path and attempts to typecast the value into an array of floats.
 // Returns error if the value is not a json array or if any of the contained objects are not numbers.
 func (v *Object) GetFloat64Array(keys ...string) ([]float64, error) {
 	child, err := v.getPath(keys)
@@ -508,7 +508,7 @@ func (v *Object) GetFloat64Array(keys ...string) ([]float64, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of ints.
+// GetInt64Array gets the value at key path and attempts to typecast the value into an array of ints.
 // Returns error if the value is not a json array or if any of the contained objects are not numbers.
 func (v *Object) GetInt64Array(keys ...string) ([]int64, error) {
 	child, err := v.getPath(keys)
@@ -540,7 +540,7 @@ func (v *Object) GetInt64Array(keys ...string) ([]int64, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of bools.
+// GetBooleanArray gets the value at key path and attempts to typecast the value into an array of bools.
 // Returns error if the value is not a json array or if any of the contained objects are not booleans.
 func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 	child, err := v.getPath(keys)
@@ -572,7 +572,7 @@ func (v *Object) GetBooleanArray(keys ...string) ([]bool, error) {
 	}
 }
 
-// Gets the value at key path and attempts to typecast the value into an array of nulls.
+// GetNullArray gets the value at key path and attempts to typecast the value into an array of nulls.
 // Returns length, or an error if the value is not a json array or if any of the contained objects are not nulls.
 func (v *Object) GetNullArray(keys ...string) (int64, error) {
 	child, err := v.getPath(keys)
@@ -604,7 +604,7 @@ func (v *Object) GetNullArray(keys ...string) (int64, error) {
 	}
 }
 
-// Returns an error if the value is not actually null
+// Null returns an error if the value is not actually null
 func (v *Value) Null() error {
 	var valid bool
 
@@ -623,7 +623,7 @@ func (v *Value) Null() error {
 
 }
 
-// Attempts to typecast the current value into an array.
+// Array: Attempts to typecast the current value into an array.
 // Returns error if the current value is not a json array.
 // Example:
 //		friendsArray, err := friendsValue.Array()
@@ -654,7 +654,7 @@ func (v *Value) Array() ([]*Value, error) {
 
 }
 
-// Attempts to typecast the current value into a number.
+// Number: Attempts to typecast the current value into a number.
 // Returns error if the current value is not a json number.
 // Example:
 //		ageNumber, err := ageValue.Number()
@@ -675,7 +675,7 @@ func (v *Value) Number() (json.Number, error) {
 	return "", ErrNotNumber
 }
 
-// Attempts to typecast the current value into a float64.
+// Float64: Attempts to typecast the current value into a float64.
 // Returns error if the current value is not a json number.
 // Example:
 //		percentage, err := v.Float64()
@@ -689,7 +689,7 @@ func (v *Value) Float64() (float64, error) {
 	return n.Float64()
 }
 
-// Attempts to typecast the current value into a int64.
+// Int64: Attempts to typecast the current value into a int64.
 // Returns error if the current value is not a json number.
 // Example:
 //		id, err := v.Int64()
@@ -703,7 +703,7 @@ func (v *Value) Int64() (int64, error) {
 	return n.Int64()
 }
 
-// Attempts to typecast the current value into a bool.
+// Boolean: Attempts to typecast the current value into a bool.
 // Returns error if the current value is not a json boolean.
 // Example:
 //		marriedBool, err := marriedValue.Boolean()
@@ -724,7 +724,7 @@ func (v *Value) Boolean() (bool, error) {
 	return false, ErrNotBool
 }
 
-// Attempts to typecast the current value into an object.
+// Object: Attempts to typecast the current value into an object.
 // Returns error if the current value is not a json object.
 // Example:
 //		friendObject, err := friendValue.Object()
@@ -761,7 +761,7 @@ func (v *Value) Object() (*Object, error) {
 	return nil, ErrNotObject
 }
 
-// Attempts to typecast the current value into an object arrau.
+// ObjectArray: Attempts to typecast the current value into an object arrau.
 // Returns error if the current value is not an array of json objects
 // Example:
 //		friendObjects, err := friendValues.ObjectArray()
@@ -798,7 +798,7 @@ func (v *Value) ObjectArray() ([]*Object, error) {
 
 }
 
-// Attempts to typecast the current value into a string.
+// String: Attempts to typecast the current value into a string.
 // Returns error if the current value is not a json string
 // Example:
 //		nameObject, err := nameValue.String()
@@ -819,7 +819,7 @@ func (v *Value) String() (string, error) {
 	return "", ErrNotString
 }
 
-// Returns the value a json formatted string.
+// String returns the value a json formatted string.
 // Note: The method named String() is used by golang's log method for logging.
 // Example:
 func (v *Object) String() string {
